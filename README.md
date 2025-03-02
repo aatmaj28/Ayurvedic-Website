@@ -1,4 +1,4 @@
-# 🌿 Kavil-Cure: Ayurvedic Jaundice Treatment Platform 🌿
+# 🌿 Kavil-Cure: Ayurvedic Jaundice Treatment Platform
 
 <p align="center">
   <img src="Images/KC.png" alt="Brand Logo" width="75%" />
