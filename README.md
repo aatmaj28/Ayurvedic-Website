@@ -1,7 +1,7 @@
 # 🌿 Kavil-Cure: Ayurvedic Jaundice Treatment Platform
 
 <p align="center">
-  <img src="Images/KC.png" alt="Brand Logo" width="55%" />
+  <img src="Images/KC.png" alt="Brand Logo" width="45%" />
 </p>
 
 ## 📋 Project Overview
@@ -72,7 +72,7 @@ This project was developed as part of the **Developer Social (Formerly Script Fo
 - **Phone**: +91 9766227792
 
 <p align="center">
-  <img src="Images/KCC.jpg" alt="Brand Card" width="75%" />
+  <img src="Images/KCC.jpg" alt="Brand Card" width="65%" />
 </p>
 
 ---
