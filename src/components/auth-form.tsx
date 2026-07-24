@@ -1,0 +1,155 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+
+function safeNext(next: string | undefined): string {
+  return next && next.startsWith("/") && !next.startsWith("//")
+    ? next
+    : "/account";
+}
+
+export function AuthForm({
+  mode,
+  next,
+}: {
+  mode: "login" | "signup";
+  next?: string;
+}) {
+  const router = useRouter();
+  const [pending, setPending] = useState(false);
+  const isLogin = mode === "login";
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "");
+    const password = String(form.get("password") ?? "");
+    const destination = safeNext(next);
+
+    setPending(true);
+    const { error } = isLogin
+      ? await authClient.signIn.email({ email, password })
+      : await authClient.signUp.email({
+          name: String(form.get("name") ?? ""),
+          email,
+          password,
+          phone: String(form.get("phone") ?? "") || undefined,
+        });
+    setPending(false);
+
+    if (error) {
+      toast.error(error.message ?? "Something went wrong. Please try again.");
+      return;
+    }
+    router.push(destination);
+    router.refresh();
+  }
+
+  return (
+    <div className="container mx-auto flex max-w-md flex-col gap-4 px-4 py-16">
+      <Card>
+        <CardHeader className="text-center">
+          <CardTitle className="font-heading text-2xl">
+            {isLogin ? "Welcome back" : "Create your account"}
+          </CardTitle>
+          <CardDescription>
+            {isLogin
+              ? "Log in to manage your appointments and orders."
+              : "An account lets you book consultations and track medicine orders."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full name</Label>
+                  <Input id="name" name="name" required minLength={2} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">
+                    Phone{" "}
+                    <span className="text-muted-foreground">(optional)</span>
+                  </Label>
+                  <Input id="phone" name="phone" type="tel" />
+                </div>
+              </>
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" type="email" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                autoComplete={isLogin ? "current-password" : "new-password"}
+              />
+              {!isLogin && (
+                <p className="text-xs text-muted-foreground">
+                  At least 8 characters.
+                </p>
+              )}
+            </div>
+            <Button type="submit" className="w-full" disabled={pending}>
+              {pending
+                ? "Please wait…"
+                : isLogin
+                  ? "Log in"
+                  : "Create account"}
+            </Button>
+          </form>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            {isLogin ? (
+              <>
+                New here?{" "}
+                <Link
+                  href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Create an account
+                </Link>
+              </>
+            ) : (
+              <>
+                Already have an account?{" "}
+                <Link
+                  href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
+                  className="font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Log in
+                </Link>
+              </>
+            )}
+          </p>
+        </CardContent>
+      </Card>
+      <div className="rounded-lg border border-dashed bg-muted/40 p-4 text-xs text-muted-foreground">
+        <p className="font-medium text-foreground">Demo credentials</p>
+        <p className="mt-1">
+          Patient: patient@kavilcure.com / patient123
+          <br />
+          Admin: admin@kavilcure.com / admin1234
+        </p>
+      </div>
+    </div>
+  );
+}
