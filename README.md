@@ -36,7 +36,7 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 | Framework | Next.js 16 (App Router, Server Components, Server Actions)    |
 | Language  | TypeScript                                                     |
 | UI        | Tailwind CSS v4 + shadcn/ui (Radix), lucide-react icons        |
-| Database  | SQLite via Prisma ORM (swap the datasource for Postgres in prod) |
+| Database  | PostgreSQL (Neon) via Prisma ORM                               |
 | Auth      | better-auth (email/password, sessions, role-based access)      |
 | Validation| Zod                                                            |
 
@@ -46,8 +46,9 @@ The payment step is an intentional mock (this is a portfolio project) — the se
 
 ```bash
 npm install
-cp .env.example .env          # then set a real BETTER_AUTH_SECRET
-npx prisma migrate dev        # creates the SQLite db and tables
+cp .env.example .env          # set DATABASE_URL (any Postgres — Neon free tier
+                              # works) and a real BETTER_AUTH_SECRET
+npx prisma migrate deploy     # creates the tables
 npx prisma db seed            # branches, products, demo users, sample data
 npm run dev                   # http://localhost:3000
 ```
