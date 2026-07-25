@@ -1,5 +1,7 @@
 # 🌿 Kavil-Cure — Ayurvedic Jaundice Care Platform
 
+![CI](https://github.com/aatmaj28/Ayurvedic-Website/actions/workflows/ci.yml/badge.svg)
+
 A full-stack healthcare platform for a family-run Ayurvedic jaundice (kavil / kamini) practice in Maharashtra: online consultation booking, medicine-kit ordering with order tracking, and a clinic admin panel.
 
 **🔗 Live demo:** [ayurvedic-website-ten.vercel.app](https://ayurvedic-website-ten.vercel.app) — demo logins below.
@@ -75,12 +77,24 @@ src/
 legacy/               the original 2022 static-HTML version, kept for posterity
 ```
 
+## Testing
+
+Playwright end-to-end tests cover the critical flows: public pages, auth
+(login/signup/role gating), appointment booking with slot availability, the
+checkout → tracking flow, and the admin order pipeline. CI runs lint, build,
+and the full suite against a throwaway Postgres on every push.
+
+```bash
+# Point DATABASE_URL at a disposable Postgres db (never production), then:
+npx prisma migrate deploy && npx prisma db seed
+AUTH_RATE_LIMIT=off npm run test:e2e
+```
+
 ## Roadmap
 
 - Real payment gateway (Stripe / Razorpay) behind the existing checkout action
 - Multilingual support (Marathi / Hindi)
 - Email notifications for bookings and order status changes
-- Playwright tests for the critical flows + CI
 
 ## Disclaimer
 

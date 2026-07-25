@@ -45,3 +45,7 @@ prisma/dev.db
 prisma/dev.db-journal
 
 !.env.example
+
+# playwright
+/test-results/
+/playwright-report/

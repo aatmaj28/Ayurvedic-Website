@@ -8,6 +8,11 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  // e2e tests log in many times from one IP; AUTH_RATE_LIMIT=off lets the
+  // suite run without tripping the sign-in throttle. Unset in production.
+  ...(process.env.AUTH_RATE_LIMIT === "off"
+    ? { rateLimit: { enabled: false } }
+    : {}),
   user: {
     additionalFields: {
       role: {
