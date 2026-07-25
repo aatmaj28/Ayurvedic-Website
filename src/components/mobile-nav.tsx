@@ -13,8 +13,12 @@ import {
 
 export function MobileNav({
   links,
+  bookLabel,
+  openLabel,
 }: {
   links: { href: string; label: string }[];
+  bookLabel: string;
+  openLabel: string;
 }) {
   const router = useRouter();
 
@@ -22,7 +26,7 @@ export function MobileNav({
     <div className="md:hidden">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label="Open menu">
+          <Button variant="ghost" size="icon" aria-label={openLabel}>
             <Menu />
           </Button>
         </DropdownMenuTrigger>
@@ -37,7 +41,7 @@ export function MobileNav({
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => router.push("/book")}>
-            Book appointment
+            {bookLabel}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -1,30 +1,33 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import { getDictionary } from "@/i18n";
 
-const FOOTER_LINKS = [
-  { href: "/treatment", label: "Treatment" },
-  { href: "/medicine", label: "Medicine kits" },
-  { href: "/book", label: "Book appointment" },
-  { href: "/about", label: "About us" },
-  { href: "/contact", label: "Contact" },
-];
+export async function SiteFooter() {
+  const dict = await getDictionary();
 
-export function SiteFooter() {
+  const footerLinks = [
+    { href: "/treatment", label: dict.nav.treatment },
+    { href: "/medicine", label: dict.nav.medicine },
+    { href: "/book", label: dict.nav.bookAppointment },
+    { href: "/about", label: dict.nav.about },
+    { href: "/contact", label: dict.nav.contact },
+  ];
+
   return (
     <footer className="border-t bg-muted/40">
       <div className="container mx-auto grid gap-10 px-4 py-12 md:grid-cols-3">
         <div className="space-y-4">
           <Logo />
           <p className="max-w-xs text-sm text-muted-foreground">
-            Traditional Ayurvedic care for jaundice (kavil / kamini), practised
-            by our family since 1930 — now accessible from anywhere in
-            Maharashtra.
+            {dict.footer.tagline}
           </p>
         </div>
         <div>
-          <h3 className="mb-3 text-sm font-semibold">Quick links</h3>
+          <h3 className="mb-3 text-sm font-semibold">
+            {dict.footer.quickLinks}
+          </h3>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            {FOOTER_LINKS.map((link) => (
+            {footerLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
@@ -37,7 +40,9 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h3 className="mb-3 text-sm font-semibold">Head office</h3>
+          <h3 className="mb-3 text-sm font-semibold">
+            {dict.footer.headOffice}
+          </h3>
           <address className="space-y-2 text-sm text-muted-foreground not-italic">
             <p>
               Near Lakshmikant Hotel, Bus Stand Road,
@@ -63,14 +68,10 @@ export function SiteFooter() {
       <div className="border-t">
         <div className="container mx-auto space-y-3 px-4 py-6">
           <p className="text-xs leading-relaxed text-muted-foreground">
-            <strong>Medical disclaimer:</strong> Kavil-Cure offers traditional
-            Ayurvedic support and is not a substitute for professional medical
-            advice, diagnosis, or treatment. Jaundice can indicate a serious
-            underlying condition — always consult a qualified physician,
-            especially for newborns, children, and pregnant women.
+            <strong>{dict.footer.disclaimerTitle}</strong> {dict.footer.disclaimer}
           </p>
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Kavil-Cure · Built by{" "}
+            © {new Date().getFullYear()} Kavil-Cure · {dict.footer.builtBy}{" "}
             <a
               href="https://www.linkedin.com/in/aatmaj-salunke-7106041b0/"
               target="_blank"

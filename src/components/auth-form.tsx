@@ -16,6 +16,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
+export type AuthLabels = {
+  loginTitle: string;
+  loginSubtitle: string;
+  signupTitle: string;
+  signupSubtitle: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  optional: string;
+  password: string;
+  passwordHint: string;
+  login: string;
+  createAccount: string;
+  pleaseWait: string;
+  newHere: string;
+  createOne: string;
+  haveAccount: string;
+  demoTitle: string;
+  genericError: string;
+};
+
 function safeNext(next: string | undefined): string {
   return next && next.startsWith("/") && !next.startsWith("//")
     ? next
@@ -25,9 +46,11 @@ function safeNext(next: string | undefined): string {
 export function AuthForm({
   mode,
   next,
+  labels,
 }: {
   mode: "login" | "signup";
   next?: string;
+  labels: AuthLabels;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -52,7 +75,7 @@ export function AuthForm({
     setPending(false);
 
     if (error) {
-      toast.error(error.message ?? "Something went wrong. Please try again.");
+      toast.error(error.message ?? labels.genericError);
       return;
     }
     router.push(destination);
@@ -64,12 +87,10 @@ export function AuthForm({
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="font-heading text-2xl">
-            {isLogin ? "Welcome back" : "Create your account"}
+            {isLogin ? labels.loginTitle : labels.signupTitle}
           </CardTitle>
           <CardDescription>
-            {isLogin
-              ? "Log in to manage your appointments and orders."
-              : "An account lets you book consultations and track medicine orders."}
+            {isLogin ? labels.loginSubtitle : labels.signupSubtitle}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,24 +98,26 @@ export function AuthForm({
             {!isLogin && (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full name</Label>
+                  <Label htmlFor="name">{labels.fullName}</Label>
                   <Input id="name" name="name" required minLength={2} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">
-                    Phone{" "}
-                    <span className="text-muted-foreground">(optional)</span>
+                    {labels.phone}{" "}
+                    <span className="text-muted-foreground">
+                      ({labels.optional})
+                    </span>
                   </Label>
                   <Input id="phone" name="phone" type="tel" />
                 </div>
               </>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{labels.email}</Label>
               <Input id="email" name="email" type="email" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{labels.password}</Label>
               <Input
                 id="password"
                 name="password"
@@ -105,37 +128,37 @@ export function AuthForm({
               />
               {!isLogin && (
                 <p className="text-xs text-muted-foreground">
-                  At least 8 characters.
+                  {labels.passwordHint}
                 </p>
               )}
             </div>
             <Button type="submit" className="w-full" disabled={pending}>
               {pending
-                ? "Please wait…"
+                ? labels.pleaseWait
                 : isLogin
-                  ? "Log in"
-                  : "Create account"}
+                  ? labels.login
+                  : labels.createAccount}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
             {isLogin ? (
               <>
-                New here?{" "}
+                {labels.newHere}{" "}
                 <Link
                   href={next ? `/signup?next=${encodeURIComponent(next)}` : "/signup"}
                   className="font-medium text-primary underline-offset-4 hover:underline"
                 >
-                  Create an account
+                  {labels.createOne}
                 </Link>
               </>
             ) : (
               <>
-                Already have an account?{" "}
+                {labels.haveAccount}{" "}
                 <Link
                   href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}
                   className="font-medium text-primary underline-offset-4 hover:underline"
                 >
-                  Log in
+                  {labels.login}
                 </Link>
               </>
             )}
@@ -143,7 +166,7 @@ export function AuthForm({
         </CardContent>
       </Card>
       <div className="rounded-lg border border-dashed bg-muted/40 p-4 text-xs text-muted-foreground">
-        <p className="font-medium text-foreground">Demo credentials</p>
+        <p className="font-medium text-foreground">{labels.demoTitle}</p>
         <p className="mt-1">
           Patient: patient@kavilcure.com / patient123
           <br />

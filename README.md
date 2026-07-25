@@ -18,6 +18,7 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 
 **Public site**
 - Home, treatment, about, and contact pages with a custom design system (deep botanical green + warm cream palette, Fraunces/Inter type pairing)
+- Trilingual — English, Hindi (हिन्दी), and Marathi (मराठी) — via a cookie-based locale with a header language switcher; the whole public site, navigation, and forms translate, and `<html lang>` updates
 - Working contact form persisted to the database
 - Branch listing with transparent consultation pricing (₹)
 - Medical disclaimer and honest, softened health claims
@@ -96,8 +97,8 @@ AUTH_RATE_LIMIT=off npm run test:e2e
 ## Roadmap
 
 - Real payment gateway (Stripe / Razorpay) behind the existing checkout action
-- Multilingual support (Marathi / Hindi)
 - Email notifications for bookings and order status changes
+- Extend translations to the logged-in dashboard and admin panel
 
 ## Disclaimer
 

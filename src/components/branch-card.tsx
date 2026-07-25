@@ -12,16 +12,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatInr } from "@/lib/constants";
+import { getDictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 import type { Branch } from "@prisma/client";
 
-export function BranchCard({
+export async function BranchCard({
   branch,
   showBookCta = true,
 }: {
   branch: Branch;
   showBookCta?: boolean;
 }) {
+  const dict = await getDictionary();
   const features = JSON.parse(branch.features) as string[];
 
   return (
@@ -36,7 +38,7 @@ export function BranchCard({
         </CardDescription>
         {branch.popular && (
           <CardAction>
-            <Badge>Most popular</Badge>
+            <Badge>{dict.branch.mostPopular}</Badge>
           </CardAction>
         )}
       </CardHeader>
@@ -45,7 +47,9 @@ export function BranchCard({
           <span className="font-heading text-3xl font-semibold">
             {formatInr(branch.consultationFee)}
           </span>{" "}
-          <span className="text-sm text-muted-foreground">/ consultation</span>
+          <span className="text-sm text-muted-foreground">
+            / {dict.common.perConsultation}
+          </span>
         </p>
         <ul className="space-y-2 text-sm text-muted-foreground">
           {features.map((feature) => (
@@ -70,7 +74,7 @@ export function BranchCard({
             className="w-full"
           >
             <Link href={`/book?branch=${branch.slug}`}>
-              Book at {branch.city}
+              {dict.branch.bookAt} {branch.city}
             </Link>
           </Button>
         </CardFooter>

@@ -16,10 +16,12 @@ export function UserMenu({
   name,
   email,
   isAdmin,
+  labels,
 }: {
   name: string;
   email: string;
   isAdmin: boolean;
+  labels: { menu: string; dashboard: string; admin: string; logout: string };
 }) {
   const router = useRouter();
   const initials = name
@@ -39,7 +41,7 @@ export function UserMenu({
     <DropdownMenu>
       <DropdownMenuTrigger
         className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-        aria-label="Account menu"
+        aria-label={labels.menu}
       >
         {initials}
       </DropdownMenuTrigger>
@@ -54,16 +56,16 @@ export function UserMenu({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => router.push("/account")}>
-          <LayoutDashboard aria-hidden /> My dashboard
+          <LayoutDashboard aria-hidden /> {labels.dashboard}
         </DropdownMenuItem>
         {isAdmin && (
           <DropdownMenuItem onClick={() => router.push("/admin")}>
-            <ShieldCheck aria-hidden /> Admin panel
+            <ShieldCheck aria-hidden /> {labels.admin}
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut aria-hidden /> Sign out
+          <LogOut aria-hidden /> {labels.logout}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

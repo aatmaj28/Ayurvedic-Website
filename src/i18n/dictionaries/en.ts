@@ -1,0 +1,239 @@
+const en = {
+  common: {
+    bookConsultation: "Book a consultation",
+    orderMedicineKits: "Order medicine kits",
+    browseMedicineKits: "Browse medicine kits",
+    seeMedicineKits: "See medicine kits",
+    learnMore: "Learn more",
+    getInTouch: "Get in touch",
+    optional: "optional",
+    free: "Free",
+    perConsultation: "consultation",
+  },
+  nav: {
+    home: "Home",
+    treatment: "Treatment",
+    medicine: "Medicine",
+    about: "About",
+    contact: "Contact",
+    bookAppointment: "Book appointment",
+    login: "Log in",
+    logout: "Sign out",
+    myDashboard: "My dashboard",
+    adminPanel: "Admin panel",
+    accountMenu: "Account menu",
+    openMenu: "Open menu",
+    language: "Language",
+  },
+  footer: {
+    tagline:
+      "Traditional Ayurvedic care for jaundice (kavil / kamini), practised by our family since 1930 — now accessible from anywhere in Maharashtra.",
+    quickLinks: "Quick links",
+    headOffice: "Head office",
+    disclaimerTitle: "Medical disclaimer:",
+    disclaimer:
+      "Kavil-Cure offers traditional Ayurvedic support and is not a substitute for professional medical advice, diagnosis, or treatment. Jaundice can indicate a serious underlying condition — always consult a qualified physician, especially for newborns, children, and pregnant women.",
+    builtBy: "Built by",
+  },
+  home: {
+    heroBadge: "Serving Maharashtra since 1930",
+    heroTitle: "Gentle, time-tested Ayurvedic care for jaundice",
+    heroSubtitle:
+      "Kavil-Cure has treated jaundice (kavil / kamini) with the same herbal preparation for four generations — without the stress, or the bill, of a hospital stay. Book a consultation or get a medicine kit delivered to your door.",
+    statSince: "Practising since",
+    statPatients: "Patients treated",
+    statCentres: "Centres in Maharashtra",
+    statFrom: "Consultations from",
+    whyTitle: "Why families choose Kavil-Cure",
+    whySubtitle:
+      "Traditional medicine, delivered with the convenience you expect today.",
+    feature1Title: "Fully herbal preparation",
+    feature1Desc:
+      "One family recipe, prepared the traditional way for over nine decades — no synthetic additives.",
+    feature2Title: "Affordable by design",
+    feature2Desc:
+      "Treatment shouldn't mean a hospital-sized bill. Consultations start at ₹250 and kits at ₹899.",
+    feature3Title: "Home delivery",
+    feature3Desc:
+      "Can't travel? Medicine kits are delivered across Maharashtra with order tracking.",
+    feature4Title: "Three centres",
+    feature4Desc:
+      "Visit us in Islampur (HQ), Mumbai, or Navi Mumbai — whichever is closest to you.",
+    feature5Title: "Guided recovery",
+    feature5Desc:
+      "Every course comes with dietary guidance and follow-up support until you're back on your feet.",
+    feature6Title: "A trusted legacy",
+    feature6Desc:
+      "Four generations of the same family have carried this practice forward since 1930.",
+    centresTitle: "Our centres & pricing",
+    centresSubtitle:
+      "Transparent consultation fees at every branch. Walk-ins welcome at the HQ; booking recommended elsewhere.",
+    howTitle: "How it works",
+    step1Title: "Book a consultation",
+    step1Desc:
+      "Pick a centre, date, and time slot online — or walk in at our Islampur HQ.",
+    step2Title: "Get your medicine",
+    step2Desc:
+      "Collect your kit at the centre, or order online and have it delivered home.",
+    step3Title: "Recover with guidance",
+    step3Desc:
+      "Follow the course and diet chart. We stay in touch until you've recovered.",
+    ctaTitle: "Ready to start your recovery?",
+    ctaSubtitle:
+      "Book a consultation at the centre nearest to you, or order a medicine kit and we'll deliver it home.",
+  },
+  branch: {
+    bookAt: "Book at",
+    callBeforeArrival: "Call Before Arrival",
+    mostPopular: "Most popular",
+  },
+  treatment: {
+    heroTitle: "Understanding jaundice, and how we treat it",
+    heroSubtitle:
+      "Jaundice (kavil / kamini) occurs when bilirubin builds up in the blood, most often because the liver is under strain. Our approach supports the liver's recovery with a traditional herbal course and a strict, simple diet.",
+    signsTitle: "Common signs of jaundice",
+    sign1: "Yellowing of the eyes and skin",
+    sign2: "Dark urine and pale stools",
+    sign3: "Loss of appetite and nausea",
+    sign4: "Fatigue and weakness",
+    warningTitle: "When to go to a hospital instead",
+    warningBody:
+      "Seek immediate medical care for jaundice in newborns, children, or during pregnancy, or if it is accompanied by high fever, severe abdominal pain, confusion, or vomiting blood. Our treatment supports recovery — it does not replace emergency care or a clinical diagnosis.",
+    courseTitle: "What a course includes",
+    courseSubtitle:
+      "The same treatment our family has offered since 1930, organised into a clear, guided course.",
+    course1Title: "Initial consultation",
+    course1Desc:
+      "A practitioner assesses your symptoms, history, and severity before any medicine is given.",
+    course2Title: "Herbal medicine course",
+    course2Desc:
+      "Daily doses of our traditional preparation, portioned for a 7-day or 21-day course.",
+    course3Title: "Dietary guidance",
+    course3Desc:
+      "A liver-friendly diet chart — what to eat, what to strictly avoid, and for how long.",
+    course4Title: "Follow-up support",
+    course4Desc:
+      "We check in on your recovery and advise if symptoms persist or change.",
+    faqTitle: "Frequently asked questions",
+    faq1Q: "How soon can I expect improvement?",
+    faq1A:
+      "Most patients report visible improvement within the first week of the course when the diet chart is followed. Recovery time varies with severity and individual health.",
+    faq2Q: "Is the medicine safe to take alongside hospital treatment?",
+    faq2A:
+      "Tell your doctor about any Ayurvedic preparation you take, and tell us about any ongoing treatment during your consultation. We will advise honestly if our course is not suitable for your case.",
+    faq3Q: "Do I need a consultation before ordering a kit?",
+    faq3A:
+      "We strongly recommend a consultation for first-time patients so the course matches your condition. Repeat patients familiar with the course can order kits directly.",
+    faq4Q: "What if symptoms get worse during the course?",
+    faq4A:
+      "Stop the course and seek medical attention immediately. Jaundice can indicate serious conditions such as hepatitis or bile-duct obstruction that need clinical care.",
+  },
+  about: {
+    heroTitle: "Four generations of care",
+    heroSubtitle:
+      "Kavil-Cure started in 1930 as one practitioner in Islampur with a family recipe and a simple belief: recovery from jaundice shouldn't require a hospital-sized bill. Over 25 lakh patients later, that belief hasn't changed.",
+    storyTitle: "Our story",
+    time1Title: "A family practice begins",
+    time1Desc:
+      "Our great-grandfather begins treating jaundice patients in Islampur with a herbal preparation passed down through the family.",
+    time2Year: "1960s–80s",
+    time2Title: "Word spreads across Western Maharashtra",
+    time2Desc:
+      "Patients travel from Kolhapur, Sangli, Satara, and beyond. The recipe and the method stay exactly the same.",
+    time3Year: "2000s",
+    time3Title: "Two new centres",
+    time3Desc:
+      "To spare patients the journey, we open branches in Mumbai and Navi Mumbai while keeping the HQ in Islampur.",
+    time4Year: "Today",
+    time4Title: "Online booking & home delivery",
+    time4Desc:
+      "The fourth generation brings the practice online — consultations can be booked from your phone and kits delivered to your home.",
+    valuesTitle: "What we stand for",
+    value1Title: "Tradition, unchanged",
+    value1Desc:
+      "The preparation follows the original family recipe. We modernise everything around the medicine — never the medicine itself.",
+    value2Title: "Honesty about limits",
+    value2Desc:
+      "Ayurveda supports recovery, but some cases need a hospital. When that's true for you, we'll say so plainly.",
+    value3Title: "Care for every budget",
+    value3Desc:
+      "We keep consultations and courses affordable because treatment delayed by cost helps nobody.",
+    value4Title: "Rooted in Islampur",
+    value4Desc:
+      "Our HQ has stood near the Islampur bus stand for decades — many patients are the grandchildren of earlier patients.",
+    findUsTitle: "Where to find us",
+  },
+  medicine: {
+    heroTitle: "Medicine kits, delivered home",
+    heroSubtitle:
+      "The same preparation dispensed at our centres, portioned into guided courses and delivered anywhere in Maharashtra.",
+    dayCourse: "day course",
+    freeDelivery: "free delivery",
+    orderThisKit: "Order this kit",
+    deliveryTitle: "Delivery across Maharashtra",
+    deliveryBody:
+      "Orders are dispatched from our Islampur HQ within 24 hours and typically arrive in 2–4 days. You can track every step from your dashboard.",
+    firstTimeTitle: "First time taking the course?",
+    firstTimeBody1: "We recommend a",
+    firstTimeConsultation: "consultation",
+    firstTimeBody2: "first so the course matches your condition.",
+  },
+  contact: {
+    heroTitle: "Talk to us",
+    heroSubtitle:
+      "Questions about symptoms, the course, or an existing order? Send a message and we'll reply within a day — or call the centre nearest to you.",
+    formTitle: "Send a message",
+    name: "Name",
+    namePlaceholder: "Your full name",
+    email: "Email",
+    phone: "Phone",
+    phonePlaceholder: "+91 98xxx xxxxx",
+    message: "Message",
+    messagePlaceholder: "Tell us about your symptoms or ask us anything…",
+    send: "Send message",
+    sending: "Sending…",
+    sentTitle: "Message sent",
+    sentBody: "Thank you! We'll get back to you within a day.",
+    centresTitle: "Our centres",
+    emailTitle: "Email",
+  },
+  auth: {
+    loginTitle: "Welcome back",
+    loginSubtitle: "Log in to manage your appointments and orders.",
+    signupTitle: "Create your account",
+    signupSubtitle:
+      "An account lets you book consultations and track medicine orders.",
+    fullName: "Full name",
+    email: "Email",
+    phone: "Phone",
+    password: "Password",
+    passwordHint: "At least 8 characters.",
+    login: "Log in",
+    createAccount: "Create account",
+    pleaseWait: "Please wait…",
+    newHere: "New here?",
+    createOne: "Create an account",
+    haveAccount: "Already have an account?",
+    demoTitle: "Demo credentials",
+    genericError: "Something went wrong. Please try again.",
+  },
+  booking: {
+    title: "Book a consultation",
+    subtitle:
+      "Choose a centre, a date, and a time slot. Pay the consultation fee at the centre — no advance payment needed.",
+    centre: "Centre",
+    chooseCentre: "Choose a centre",
+    date: "Date",
+    timeSlot: "Time slot",
+    slotsHint: "Greyed-out slots are already booked.",
+    slotsPrompt: "Pick a centre and date to see available slots.",
+    notes: "Notes for the practitioner",
+    notesPlaceholder: "e.g. symptoms started a week ago…",
+    summaryPrefix: "Consultation at",
+    summarySuffix: "payable at the centre.",
+    confirm: "Confirm booking",
+    booking: "Booking…",
+  },
+} as const;
+
+export default en;

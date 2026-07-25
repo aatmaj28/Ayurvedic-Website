@@ -13,12 +13,27 @@ import {
 
 const initialState: ContactFormState = { status: "idle" };
 
+export type ContactFormLabels = {
+  name: string;
+  namePlaceholder: string;
+  email: string;
+  phone: string;
+  optional: string;
+  phonePlaceholder: string;
+  message: string;
+  messagePlaceholder: string;
+  send: string;
+  sending: string;
+  sentTitle: string;
+  sentBody: string;
+};
+
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return <p className="text-sm text-destructive">{message}</p>;
 }
 
-export function ContactForm() {
+export function ContactForm({ labels }: { labels: ContactFormLabels }) {
   const [state, formAction, pending] = useActionState(
     submitContactMessage,
     initialState
@@ -28,8 +43,10 @@ export function ContactForm() {
     return (
       <div className="flex flex-col items-center gap-3 rounded-xl border bg-card p-10 text-center">
         <CheckCircle2 className="size-10 text-primary" aria-hidden />
-        <h3 className="font-heading text-xl font-semibold">Message sent</h3>
-        <p className="text-sm text-muted-foreground">{state.message}</p>
+        <h3 className="font-heading text-xl font-semibold">
+          {labels.sentTitle}
+        </h3>
+        <p className="text-sm text-muted-foreground">{labels.sentBody}</p>
       </div>
     );
   }
@@ -38,12 +55,17 @@ export function ContactForm() {
     <form action={formAction} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="name">Name</Label>
-          <Input id="name" name="name" placeholder="Your full name" required />
+          <Label htmlFor="name">{labels.name}</Label>
+          <Input
+            id="name"
+            name="name"
+            placeholder={labels.namePlaceholder}
+            required
+          />
           <FieldError message={state.fieldErrors?.name} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{labels.email}</Label>
           <Input
             id="email"
             name="email"
@@ -56,29 +78,30 @@ export function ContactForm() {
       </div>
       <div className="space-y-2">
         <Label htmlFor="phone">
-          Phone <span className="text-muted-foreground">(optional)</span>
+          {labels.phone}{" "}
+          <span className="text-muted-foreground">({labels.optional})</span>
         </Label>
         <Input
           id="phone"
           name="phone"
           type="tel"
-          placeholder="+91 98xxx xxxxx"
+          placeholder={labels.phonePlaceholder}
         />
         <FieldError message={state.fieldErrors?.phone} />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="message">Message</Label>
+        <Label htmlFor="message">{labels.message}</Label>
         <Textarea
           id="message"
           name="message"
-          placeholder="Tell us about your symptoms or ask us anything…"
+          placeholder={labels.messagePlaceholder}
           rows={5}
           required
         />
         <FieldError message={state.fieldErrors?.message} />
       </div>
       <Button type="submit" disabled={pending} className="w-full sm:w-auto">
-        {pending ? "Sending…" : "Send message"}
+        {pending ? labels.sending : labels.send}
       </Button>
     </form>
   );

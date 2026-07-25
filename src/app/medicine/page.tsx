@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { formatInr } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Medicine Kits",
@@ -22,20 +23,21 @@ export const metadata: Metadata = {
 };
 
 export default async function MedicinePage() {
-  const products = await prisma.product.findMany({
-    orderBy: { priceInr: "asc" },
-  });
+  const [products, dict] = await Promise.all([
+    prisma.product.findMany({ orderBy: { priceInr: "asc" } }),
+    getDictionary(),
+  ]);
+  const t = dict.medicine;
 
   return (
     <>
       <section className="border-b bg-gradient-to-b from-secondary/60 to-background">
         <div className="container mx-auto max-w-3xl px-4 py-16 text-center">
           <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-            Medicine kits, delivered home
+            {t.heroTitle}
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            The same preparation dispensed at our centres, portioned into
-            guided courses and delivered anywhere in Maharashtra.
+            {t.heroSubtitle}
           </p>
         </div>
       </section>
@@ -51,7 +53,7 @@ export default async function MedicinePage() {
                   </CardTitle>
                   <Badge variant="secondary">
                     <CalendarRange aria-hidden />
-                    {product.courseDays}-day course
+                    {product.courseDays}-{t.dayCourse}
                   </Badge>
                 </div>
                 <CardDescription>{product.tagline}</CardDescription>
@@ -65,13 +67,13 @@ export default async function MedicinePage() {
                     {formatInr(product.priceInr)}
                   </span>{" "}
                   <span className="text-sm text-muted-foreground">
-                    · free delivery
+                    · {t.freeDelivery}
                   </span>
                 </p>
               </CardContent>
               <CardFooter>
                 <Button asChild size="lg" className="w-full">
-                  <Link href={`/order/${product.slug}`}>Order this kit</Link>
+                  <Link href={`/order/${product.slug}`}>{t.orderThisKit}</Link>
                 </Button>
               </CardFooter>
             </Card>
@@ -81,22 +83,18 @@ export default async function MedicinePage() {
         <div className="mt-10 space-y-4">
           <Alert>
             <Truck aria-hidden />
-            <AlertTitle>Delivery across Maharashtra</AlertTitle>
-            <AlertDescription>
-              Orders are dispatched from our Islampur HQ within 24 hours and
-              typically arrive in 2–4 days. You can track every step from your
-              dashboard.
-            </AlertDescription>
+            <AlertTitle>{t.deliveryTitle}</AlertTitle>
+            <AlertDescription>{t.deliveryBody}</AlertDescription>
           </Alert>
           <Alert>
             <Info aria-hidden />
-            <AlertTitle>First time taking the course?</AlertTitle>
+            <AlertTitle>{t.firstTimeTitle}</AlertTitle>
             <AlertDescription>
-              We recommend a{" "}
+              {t.firstTimeBody1}{" "}
               <Link href="/book" className="underline underline-offset-2">
-                consultation
+                {t.firstTimeConsultation}
               </Link>{" "}
-              first so the course matches your condition.
+              {t.firstTimeBody2}
             </AlertDescription>
           </Alert>
         </div>

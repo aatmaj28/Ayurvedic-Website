@@ -11,11 +11,7 @@ import {
   Stethoscope,
   UtensilsCrossed,
 } from "lucide-react";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Jaundice Treatment",
@@ -30,86 +27,50 @@ export const metadata: Metadata = {
     "How Kavil-Cure's traditional Ayurvedic jaundice treatment works: consultation, herbal course, dietary guidance, and follow-up.",
 };
 
-const SYMPTOMS = [
-  { icon: Eye, text: "Yellowing of the eyes and skin" },
-  { icon: Droplets, text: "Dark urine and pale stools" },
-  { icon: UtensilsCrossed, text: "Loss of appetite and nausea" },
-  { icon: Moon, text: "Fatigue and weakness" },
-];
+export default async function TreatmentPage() {
+  const dict = await getDictionary();
+  const t = dict.treatment;
 
-const COURSE_INCLUDES = [
-  {
-    icon: Stethoscope,
-    title: "Initial consultation",
-    description:
-      "A practitioner assesses your symptoms, history, and severity before any medicine is given.",
-  },
-  {
-    icon: Leaf,
-    title: "Herbal medicine course",
-    description:
-      "Daily doses of our traditional preparation, portioned for a 7-day or 21-day course.",
-  },
-  {
-    icon: Salad,
-    title: "Dietary guidance",
-    description:
-      "A liver-friendly diet chart — what to eat, what to strictly avoid, and for how long.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Follow-up support",
-    description:
-      "We check in on your recovery and advise if symptoms persist or change.",
-  },
-];
+  const symptoms = [
+    { icon: Eye, text: t.sign1 },
+    { icon: Droplets, text: t.sign2 },
+    { icon: UtensilsCrossed, text: t.sign3 },
+    { icon: Moon, text: t.sign4 },
+  ];
 
-const FAQS = [
-  {
-    question: "How soon can I expect improvement?",
-    answer:
-      "Most patients report visible improvement within the first week of the course when the diet chart is followed. Recovery time varies with severity and individual health.",
-  },
-  {
-    question: "Is the medicine safe to take alongside hospital treatment?",
-    answer:
-      "Tell your doctor about any Ayurvedic preparation you take, and tell us about any ongoing treatment during your consultation. We will advise honestly if our course is not suitable for your case.",
-  },
-  {
-    question: "Do I need a consultation before ordering a kit?",
-    answer:
-      "We strongly recommend a consultation for first-time patients so the course matches your condition. Repeat patients familiar with the course can order kits directly.",
-  },
-  {
-    question: "What if symptoms get worse during the course?",
-    answer:
-      "Stop the course and seek medical attention immediately. Jaundice can indicate serious conditions such as hepatitis or bile-duct obstruction that need clinical care.",
-  },
-];
+  const courseIncludes = [
+    { icon: Stethoscope, title: t.course1Title, description: t.course1Desc },
+    { icon: Leaf, title: t.course2Title, description: t.course2Desc },
+    { icon: Salad, title: t.course3Title, description: t.course3Desc },
+    { icon: ClipboardList, title: t.course4Title, description: t.course4Desc },
+  ];
 
-export default function TreatmentPage() {
+  const faqs = [
+    { question: t.faq1Q, answer: t.faq1A },
+    { question: t.faq2Q, answer: t.faq2A },
+    { question: t.faq3Q, answer: t.faq3A },
+    { question: t.faq4Q, answer: t.faq4A },
+  ];
+
   return (
     <>
       <section className="border-b bg-gradient-to-b from-secondary/60 to-background">
         <div className="container mx-auto max-w-3xl px-4 py-16 text-center">
           <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">
-            Understanding jaundice, and how we treat it
+            {t.heroTitle}
           </h1>
           <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Jaundice (kavil / kamini) occurs when bilirubin builds up in the
-            blood, most often because the liver is under strain. Our approach
-            supports the liver&apos;s recovery with a traditional herbal course
-            and a strict, simple diet.
+            {t.heroSubtitle}
           </p>
         </div>
       </section>
 
       <section className="container mx-auto max-w-5xl px-4 py-16">
         <h2 className="mb-8 text-center font-heading text-3xl font-semibold">
-          Common signs of jaundice
+          {t.signsTitle}
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SYMPTOMS.map((symptom) => (
+          {symptoms.map((symptom) => (
             <div
               key={symptom.text}
               className="flex flex-col items-center gap-3 rounded-xl border bg-card p-6 text-center"
@@ -124,28 +85,21 @@ export default function TreatmentPage() {
 
         <Alert variant="destructive" className="mt-8">
           <AlertTriangle aria-hidden />
-          <AlertTitle>When to go to a hospital instead</AlertTitle>
-          <AlertDescription>
-            Seek immediate medical care for jaundice in newborns, children, or
-            during pregnancy, or if it is accompanied by high fever, severe
-            abdominal pain, confusion, or vomiting blood. Our treatment
-            supports recovery — it does not replace emergency care or a
-            clinical diagnosis.
-          </AlertDescription>
+          <AlertTitle>{t.warningTitle}</AlertTitle>
+          <AlertDescription>{t.warningBody}</AlertDescription>
         </Alert>
       </section>
 
       <section className="border-y bg-muted/40">
         <div className="container mx-auto max-w-5xl px-4 py-16">
           <h2 className="mb-3 text-center font-heading text-3xl font-semibold">
-            What a course includes
+            {t.courseTitle}
           </h2>
           <p className="mx-auto mb-10 max-w-2xl text-center text-muted-foreground">
-            The same treatment our family has offered since 1930, organised
-            into a clear, guided course.
+            {t.courseSubtitle}
           </p>
           <div className="grid gap-6 sm:grid-cols-2">
-            {COURSE_INCLUDES.map((item) => (
+            {courseIncludes.map((item) => (
               <Card key={item.title}>
                 <CardHeader>
                   <span className="mb-2 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -159,10 +113,10 @@ export default function TreatmentPage() {
           </div>
           <div className="mt-10 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/book">Book a consultation</Link>
+              <Link href="/book">{dict.common.bookConsultation}</Link>
             </Button>
             <Button asChild size="lg" variant="outline">
-              <Link href="/medicine">See medicine kits</Link>
+              <Link href="/medicine">{dict.common.seeMedicineKits}</Link>
             </Button>
           </div>
         </div>
@@ -170,10 +124,10 @@ export default function TreatmentPage() {
 
       <section className="container mx-auto max-w-3xl px-4 py-16">
         <h2 className="mb-8 text-center font-heading text-3xl font-semibold">
-          Frequently asked questions
+          {t.faqTitle}
         </h2>
         <div className="space-y-6">
-          {FAQS.map((faq) => (
+          {faqs.map((faq) => (
             <Card key={faq.question}>
               <CardHeader>
                 <CardTitle className="text-base">{faq.question}</CardTitle>

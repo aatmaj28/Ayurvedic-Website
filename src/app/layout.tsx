@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { getLocale } from "@/i18n";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,13 +25,14 @@ export const metadata: Metadata = {
     "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930. Book consultations at our Maharashtra centres or get herbal medicine kits delivered to your home.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
   return (
-    <html lang="en" className={`${inter.variable} ${fraunces.variable}`}>
+    <html lang={locale} className={`${inter.variable} ${fraunces.variable}`}>
       <body className="flex min-h-svh flex-col antialiased">
         <SiteHeader />
         <main className="flex-1">{children}</main>

@@ -12,78 +12,36 @@ import {
 import { Button } from "@/components/ui/button";
 import { BranchCard } from "@/components/branch-card";
 import { prisma } from "@/lib/prisma";
-
-const STATS = [
-  { value: "1930", label: "Practising since" },
-  { value: "25 lakh+", label: "Patients treated" },
-  { value: "3", label: "Centres in Maharashtra" },
-  { value: "₹250", label: "Consultations from" },
-];
-
-const FEATURES = [
-  {
-    icon: Leaf,
-    title: "Fully herbal preparation",
-    description:
-      "One family recipe, prepared the traditional way for over nine decades — no synthetic additives.",
-  },
-  {
-    icon: HandCoins,
-    title: "Affordable by design",
-    description:
-      "Treatment shouldn't mean a hospital-sized bill. Consultations start at ₹250 and kits at ₹899.",
-  },
-  {
-    icon: Truck,
-    title: "Home delivery",
-    description:
-      "Can't travel? Medicine kits are delivered across Maharashtra with order tracking.",
-  },
-  {
-    icon: MapPin,
-    title: "Three centres",
-    description:
-      "Visit us in Islampur (HQ), Mumbai, or Navi Mumbai — whichever is closest to you.",
-  },
-  {
-    icon: HeartPulse,
-    title: "Guided recovery",
-    description:
-      "Every course comes with dietary guidance and follow-up support until you're back on your feet.",
-  },
-  {
-    icon: Sprout,
-    title: "A trusted legacy",
-    description:
-      "Four generations of the same family have carried this practice forward since 1930.",
-  },
-];
-
-const STEPS = [
-  {
-    icon: CalendarCheck,
-    title: "Book a consultation",
-    description:
-      "Pick a centre, date, and time slot online — or walk in at our Islampur HQ.",
-  },
-  {
-    icon: Package,
-    title: "Get your medicine",
-    description:
-      "Collect your kit at the centre, or order online and have it delivered home.",
-  },
-  {
-    icon: HeartPulse,
-    title: "Recover with guidance",
-    description:
-      "Follow the course and diet chart. We stay in touch until you've recovered.",
-  },
-];
+import { getDictionary } from "@/i18n";
 
 export default async function HomePage() {
-  const branches = await prisma.branch.findMany({
-    orderBy: { consultationFee: "asc" },
-  });
+  const [branches, dict] = await Promise.all([
+    prisma.branch.findMany({ orderBy: { consultationFee: "asc" } }),
+    getDictionary(),
+  ]);
+  const t = dict.home;
+
+  const stats = [
+    { value: "1930", label: t.statSince },
+    { value: "25 lakh+", label: t.statPatients },
+    { value: "3", label: t.statCentres },
+    { value: "₹250", label: t.statFrom },
+  ];
+
+  const features = [
+    { icon: Leaf, title: t.feature1Title, description: t.feature1Desc },
+    { icon: HandCoins, title: t.feature2Title, description: t.feature2Desc },
+    { icon: Truck, title: t.feature3Title, description: t.feature3Desc },
+    { icon: MapPin, title: t.feature4Title, description: t.feature4Desc },
+    { icon: HeartPulse, title: t.feature5Title, description: t.feature5Desc },
+    { icon: Sprout, title: t.feature6Title, description: t.feature6Desc },
+  ];
+
+  const steps = [
+    { icon: CalendarCheck, title: t.step1Title, description: t.step1Desc },
+    { icon: Package, title: t.step2Title, description: t.step2Desc },
+    { icon: HeartPulse, title: t.step3Title, description: t.step3Desc },
+  ];
 
   return (
     <>
@@ -93,23 +51,20 @@ export default async function HomePage() {
           <div className="space-y-6">
             <p className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
               <Leaf className="size-3.5" aria-hidden />
-              Serving Maharashtra since 1930
+              {t.heroBadge}
             </p>
             <h1 className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              Gentle, time-tested Ayurvedic care for jaundice
+              {t.heroTitle}
             </h1>
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Kavil-Cure has treated jaundice (kavil / kamini) with the same
-              herbal preparation for four generations — without the stress, or
-              the bill, of a hospital stay. Book a consultation or get a
-              medicine kit delivered to your door.
+              {t.heroSubtitle}
             </p>
             <div className="flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link href="/book">Book a consultation</Link>
+                <Link href="/book">{dict.common.bookConsultation}</Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/medicine">Order medicine kits</Link>
+                <Link href="/medicine">{dict.common.orderMedicineKits}</Link>
               </Button>
             </div>
           </div>
@@ -128,7 +83,7 @@ export default async function HomePage() {
       {/* Stats */}
       <section className="border-b">
         <div className="container mx-auto grid grid-cols-2 gap-8 px-4 py-12 text-center md:grid-cols-4">
-          {STATS.map((stat) => (
+          {stats.map((stat) => (
             <div key={stat.label}>
               <p className="font-heading text-3xl font-semibold sm:text-4xl">
                 {stat.value}
@@ -143,15 +98,12 @@ export default async function HomePage() {
       <section className="container mx-auto px-4 py-20">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
-            Why families choose Kavil-Cure
+            {t.whyTitle}
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Traditional medicine, delivered with the convenience you expect
-            today.
-          </p>
+          <p className="mt-3 text-muted-foreground">{t.whySubtitle}</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((feature) => (
+          {features.map((feature) => (
             <div
               key={feature.title}
               className="rounded-xl border bg-card p-6 shadow-xs"
@@ -173,12 +125,9 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 py-20">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
-              Our centres &amp; pricing
+              {t.centresTitle}
             </h2>
-            <p className="mt-3 text-muted-foreground">
-              Transparent consultation fees at every branch. Walk-ins welcome
-              at the HQ; booking recommended elsewhere.
-            </p>
+            <p className="mt-3 text-muted-foreground">{t.centresSubtitle}</p>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
             {branches.map((branch) => (
@@ -192,11 +141,11 @@ export default async function HomePage() {
       <section className="container mx-auto px-4 py-20">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="font-heading text-3xl font-semibold sm:text-4xl">
-            How it works
+            {t.howTitle}
           </h2>
         </div>
         <div className="grid gap-10 md:grid-cols-3">
-          {STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <div key={step.title} className="text-center">
               <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <step.icon className="size-6" aria-hidden />
@@ -216,15 +165,12 @@ export default async function HomePage() {
       <section className="bg-primary text-primary-foreground">
         <div className="container mx-auto flex flex-col items-center gap-6 px-4 py-16 text-center">
           <h2 className="font-heading text-3xl font-semibold text-balance sm:text-4xl">
-            Ready to start your recovery?
+            {t.ctaTitle}
           </h2>
-          <p className="max-w-xl text-primary-foreground/85">
-            Book a consultation at the centre nearest to you, or order a
-            medicine kit and we&apos;ll deliver it home.
-          </p>
+          <p className="max-w-xl text-primary-foreground/85">{t.ctaSubtitle}</p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" variant="secondary">
-              <Link href="/book">Book a consultation</Link>
+              <Link href="/book">{dict.common.bookConsultation}</Link>
             </Button>
             <Button
               asChild
@@ -232,7 +178,7 @@ export default async function HomePage() {
               variant="outline"
               className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
             >
-              <Link href="/medicine">Browse medicine kits</Link>
+              <Link href="/medicine">{dict.common.browseMedicineKits}</Link>
             </Button>
           </div>
         </div>

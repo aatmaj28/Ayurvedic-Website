@@ -36,6 +36,24 @@ export type BookableBranch = {
 
 const initialState: BookingFormState = { status: "idle" };
 
+export type BookingLabels = {
+  title: string;
+  subtitle: string;
+  centre: string;
+  chooseCentre: string;
+  date: string;
+  timeSlot: string;
+  slotsHint: string;
+  slotsPrompt: string;
+  notes: string;
+  optional: string;
+  notesPlaceholder: string;
+  summaryPrefix: string;
+  summarySuffix: string;
+  confirm: string;
+  booking: string;
+};
+
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return <p className="text-sm text-destructive">{message}</p>;
@@ -46,11 +64,13 @@ export function BookingForm({
   initialBranchSlug,
   minDate,
   maxDate,
+  labels,
 }: {
   branches: BookableBranch[];
   initialBranchSlug?: string;
   minDate: string;
   maxDate: string;
+  labels: BookingLabels;
 }) {
   const preselected =
     branches.find((branch) => branch.slug === initialBranchSlug) ?? null;
@@ -99,21 +119,16 @@ export function BookingForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-heading text-xl">
-          Book a consultation
-        </CardTitle>
-        <CardDescription>
-          Choose a centre, a date, and a time slot. Pay the consultation fee at
-          the centre — no advance payment needed.
-        </CardDescription>
+        <CardTitle className="font-heading text-xl">{labels.title}</CardTitle>
+        <CardDescription>{labels.subtitle}</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="branch">Centre</Label>
+            <Label htmlFor="branch">{labels.centre}</Label>
             <Select name="branchId" value={branchId} onValueChange={setBranchId}>
               <SelectTrigger id="branch" className="w-full">
-                <SelectValue placeholder="Choose a centre" />
+                <SelectValue placeholder={labels.chooseCentre} />
               </SelectTrigger>
               <SelectContent>
                 {branches.map((branch) => (
@@ -127,7 +142,7 @@ export function BookingForm({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="date">Date</Label>
+            <Label htmlFor="date">{labels.date}</Label>
             <Input
               id="date"
               name="date"
@@ -142,7 +157,7 @@ export function BookingForm({
           </div>
 
           <div className="space-y-2">
-            <Label>Time slot</Label>
+            <Label>{labels.timeSlot}</Label>
             <input type="hidden" name="slot" value={slot} />
             <div className="grid grid-cols-4 gap-2">
               {APPOINTMENT_SLOTS.map((slotOption) => {
@@ -167,28 +182,22 @@ export function BookingForm({
                 );
               })}
             </div>
-            {branchId && date ? (
-              <p className="text-xs text-muted-foreground">
-                Greyed-out slots are already booked.
-              </p>
-            ) : (
-              <p className="text-xs text-muted-foreground">
-                Pick a centre and date to see available slots.
-              </p>
-            )}
+            <p className="text-xs text-muted-foreground">
+              {branchId && date ? labels.slotsHint : labels.slotsPrompt}
+            </p>
             <FieldError message={state.fieldErrors?.slot} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="notes">
-              Notes for the practitioner{" "}
-              <span className="text-muted-foreground">(optional)</span>
+              {labels.notes}{" "}
+              <span className="text-muted-foreground">({labels.optional})</span>
             </Label>
             <Textarea
               id="notes"
               name="notes"
               rows={3}
-              placeholder="e.g. symptoms started a week ago…"
+              placeholder={labels.notesPlaceholder}
             />
             <FieldError message={state.fieldErrors?.notes} />
           </div>
@@ -196,9 +205,9 @@ export function BookingForm({
           {selectedBranch && (
             <div className="rounded-lg bg-muted/60 p-4 text-sm">
               <p>
-                Consultation at <strong>{selectedBranch.name}</strong> —{" "}
-                <strong>{formatInr(selectedBranch.consultationFee)}</strong>,
-                payable at the centre.
+                {labels.summaryPrefix} <strong>{selectedBranch.name}</strong> —{" "}
+                <strong>{formatInr(selectedBranch.consultationFee)}</strong>,{" "}
+                {labels.summarySuffix}
               </p>
             </div>
           )}
@@ -213,7 +222,7 @@ export function BookingForm({
             className="w-full"
             disabled={pending || !branchId || !date || !slot}
           >
-            {pending ? "Booking…" : "Confirm booking"}
+            {pending ? labels.booking : labels.confirm}
           </Button>
         </form>
       </CardContent>

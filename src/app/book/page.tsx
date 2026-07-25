@@ -3,6 +3,7 @@ import { BookingForm } from "@/components/booking-form";
 import { bookingDateRange } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Book a Consultation",
@@ -14,7 +15,7 @@ export default async function BookPage({
   searchParams: Promise<{ branch?: string }>;
 }) {
   await requireSession();
-  const { branch } = await searchParams;
+  const [{ branch }, dict] = await Promise.all([searchParams, getDictionary()]);
 
   const branches = await prisma.branch.findMany({
     orderBy: { consultationFee: "asc" },
@@ -36,6 +37,7 @@ export default async function BookPage({
         initialBranchSlug={branch}
         minDate={minDate}
         maxDate={maxDate}
+        labels={{ ...dict.booking, optional: dict.common.optional }}
       />
     </div>
   );
