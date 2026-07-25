@@ -71,9 +71,9 @@ export default async function AdminOverviewPage() {
                 key={appointment.id}
                 className="flex items-center justify-between gap-3 text-sm"
               >
-                <div>
-                  <p className="font-medium">{appointment.user.name}</p>
-                  <p className="text-muted-foreground">
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{appointment.user.name}</p>
+                  <p className="truncate text-muted-foreground">
                     {appointment.branch.city} · {formatDate(appointment.date)}{" "}
                     {appointment.slot}
                   </p>
@@ -102,9 +102,9 @@ export default async function AdminOverviewPage() {
                 key={order.id}
                 className="flex items-center justify-between gap-3 text-sm"
               >
-                <div>
-                  <p className="font-medium">{order.number}</p>
-                  <p className="text-muted-foreground">
+                <div className="min-w-0">
+                  <p className="truncate font-medium">{order.number}</p>
+                  <p className="truncate text-muted-foreground">
                     {order.user.name} · {formatInr(order.totalInr)}
                   </p>
                 </div>

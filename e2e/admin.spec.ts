@@ -13,7 +13,10 @@ test.describe("clinic admin", () => {
     ).toBeVisible();
 
     await page.goto("/admin/orders");
-    await expect(page.getByText(/KC-\d{6}-\d{4}/).first()).toBeVisible();
+    // Scope to the desktop <table> (the mobile card layout is display:none here).
+    await expect(
+      page.locator("table").getByText(/KC-\d{6}-\d{4}/).first()
+    ).toBeVisible();
 
     await page.goto("/admin/appointments");
     await expect(

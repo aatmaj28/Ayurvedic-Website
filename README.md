@@ -81,8 +81,11 @@ legacy/               the original 2022 static-HTML version, kept for posterity
 
 Playwright end-to-end tests cover the critical flows: public pages, auth
 (login/signup/role gating), appointment booking with slot availability, the
-checkout → tracking flow, and the admin order pipeline. CI runs lint, build,
-and the full suite against a throwaway Postgres on every push.
+checkout → tracking flow, and the admin order pipeline. A separate mobile
+project (Pixel 7 viewport) asserts no horizontal overflow across every page,
+that the hamburger nav works, and that the admin tables collapse into tappable
+cards. CI runs lint, build, and the full suite against a throwaway Postgres on
+every push.
 
 ```bash
 # Point DATABASE_URL at a disposable Postgres db (never production), then:

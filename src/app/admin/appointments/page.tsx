@@ -17,79 +17,131 @@ export const metadata: Metadata = {
   title: "Admin · Appointments",
 };
 
+function AppointmentActions({
+  appointmentId,
+  status,
+  className,
+}: {
+  appointmentId: string;
+  status: string;
+  className?: string;
+}) {
+  if (status !== APPOINTMENT_STATUS.SCHEDULED) {
+    return <span className="text-sm text-muted-foreground">—</span>;
+  }
+  return (
+    <div className={className}>
+      <form
+        action={updateAppointmentStatus.bind(
+          null,
+          appointmentId,
+          APPOINTMENT_STATUS.COMPLETED
+        )}
+      >
+        <Button size="sm" variant="outline" type="submit">
+          Mark completed
+        </Button>
+      </form>
+      <form
+        action={updateAppointmentStatus.bind(
+          null,
+          appointmentId,
+          APPOINTMENT_STATUS.CANCELLED
+        )}
+      >
+        <Button size="sm" variant="destructive" type="submit">
+          Cancel
+        </Button>
+      </form>
+    </div>
+  );
+}
+
 export default async function AdminAppointmentsPage() {
   const appointments = await prisma.appointment.findMany({
     include: { user: true, branch: true },
     orderBy: [{ date: "asc" }, { slot: "asc" }],
   });
 
+  if (appointments.length === 0) {
+    return (
+      <div className="rounded-xl border bg-card p-6 text-center text-muted-foreground">
+        No appointments yet.
+      </div>
+    );
+  }
+
   return (
-    <div className="rounded-xl border bg-card">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Patient</TableHead>
-            <TableHead>Centre</TableHead>
-            <TableHead>Date &amp; slot</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {appointments.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
-                No appointments yet.
-              </TableCell>
-            </TableRow>
-          )}
-          {appointments.map((appointment) => (
-            <TableRow key={appointment.id}>
-              <TableCell>
+    <>
+      {/* Mobile: stacked cards */}
+      <div className="space-y-4 md:hidden">
+        {appointments.map((appointment) => (
+          <div
+            key={appointment.id}
+            className="rounded-xl border bg-card p-4 text-sm"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div>
                 <p className="font-medium">{appointment.user.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {appointment.user.email}
                 </p>
-              </TableCell>
-              <TableCell>{appointment.branch.city}</TableCell>
-              <TableCell>
-                {formatDate(appointment.date)} · {appointment.slot}
-              </TableCell>
-              <TableCell>
-                <StatusBadge status={appointment.status} />
-              </TableCell>
-              <TableCell className="text-right">
-                {appointment.status === APPOINTMENT_STATUS.SCHEDULED && (
-                  <div className="flex justify-end gap-2">
-                    <form
-                      action={updateAppointmentStatus.bind(
-                        null,
-                        appointment.id,
-                        APPOINTMENT_STATUS.COMPLETED
-                      )}
-                    >
-                      <Button size="sm" variant="outline" type="submit">
-                        Mark completed
-                      </Button>
-                    </form>
-                    <form
-                      action={updateAppointmentStatus.bind(
-                        null,
-                        appointment.id,
-                        APPOINTMENT_STATUS.CANCELLED
-                      )}
-                    >
-                      <Button size="sm" variant="destructive" type="submit">
-                        Cancel
-                      </Button>
-                    </form>
-                  </div>
-                )}
-              </TableCell>
+              </div>
+              <StatusBadge status={appointment.status} />
+            </div>
+            <p className="mt-2 text-muted-foreground">
+              {appointment.branch.city} · {formatDate(appointment.date)} ·{" "}
+              {appointment.slot}
+            </p>
+            <AppointmentActions
+              appointmentId={appointment.id}
+              status={appointment.status}
+              className="mt-3 flex flex-wrap gap-2"
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop: table */}
+      <div className="hidden rounded-xl border bg-card md:block">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Patient</TableHead>
+              <TableHead>Centre</TableHead>
+              <TableHead>Date &amp; slot</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+          </TableHeader>
+          <TableBody>
+            {appointments.map((appointment) => (
+              <TableRow key={appointment.id}>
+                <TableCell>
+                  <p className="font-medium">{appointment.user.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {appointment.user.email}
+                  </p>
+                </TableCell>
+                <TableCell>{appointment.branch.city}</TableCell>
+                <TableCell>
+                  {formatDate(appointment.date)} · {appointment.slot}
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={appointment.status} />
+                </TableCell>
+                <TableCell>
+                  <AppointmentActions
+                    appointmentId={appointment.id}
+                    status={appointment.status}
+                    className="flex justify-end gap-2"
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </>
   );
 }
