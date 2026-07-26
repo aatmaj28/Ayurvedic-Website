@@ -1,9 +1,6 @@
 import { Check, Circle, X } from "lucide-react";
-import {
-  ORDER_STATUS_FLOW,
-  ORDER_STATUS_LABELS,
-  formatDateTime,
-} from "@/lib/constants";
+import { ORDER_STATUS_FLOW, formatDateTime } from "@/lib/constants";
+import { getDictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 type TimelineEvent = {
@@ -12,13 +9,14 @@ type TimelineEvent = {
   createdAt: Date;
 };
 
-export function OrderTimeline({
+export async function OrderTimeline({
   events,
   currentStatus,
 }: {
   events: TimelineEvent[];
   currentStatus: string;
 }) {
+  const dict = await getDictionary();
   const eventsByStatus = new Map(events.map((event) => [event.status, event]));
   const cancelled = currentStatus === "CANCELLED";
   const cancelEvent = eventsByStatus.get("CANCELLED");
@@ -60,7 +58,7 @@ export function OrderTimeline({
             </span>
             <div className="pt-0.5">
               <p className={cn("text-sm font-medium", !reached && "text-muted-foreground")}>
-                {ORDER_STATUS_LABELS[status]}
+                {dict.status[status]}
               </p>
               {event && (
                 <p className="text-xs text-muted-foreground">
@@ -78,7 +76,9 @@ export function OrderTimeline({
             <X className="size-4" aria-hidden />
           </span>
           <div className="pt-0.5">
-            <p className="text-sm font-medium text-destructive">Cancelled</p>
+            <p className="text-sm font-medium text-destructive">
+              {dict.status.CANCELLED}
+            </p>
             {cancelEvent && (
               <p className="text-xs text-muted-foreground">
                 {formatDateTime(cancelEvent.createdAt)}

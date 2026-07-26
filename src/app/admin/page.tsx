@@ -12,13 +12,14 @@ import {
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate, formatInr } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Admin",
 };
 
 export default async function AdminOverviewPage() {
-  const [appointments, orders, unreadMessages] = await Promise.all([
+  const [appointments, orders, unreadMessages, dict] = await Promise.all([
     prisma.appointment.findMany({
       include: { user: true, branch: true },
       orderBy: { createdAt: "desc" },
@@ -30,7 +31,9 @@ export default async function AdminOverviewPage() {
       take: 5,
     }),
     prisma.contactMessage.count({ where: { read: false } }),
+    getDictionary(),
   ]);
+  const t = dict.admin;
 
   return (
     <div className="space-y-8">
@@ -38,12 +41,12 @@ export default async function AdminOverviewPage() {
         <Card>
           <CardContent className="flex items-center justify-between gap-4">
             <p className="text-sm">
-              You have <strong>{unreadMessages}</strong> unread contact{" "}
-              {unreadMessages === 1 ? "message" : "messages"}.
+              {t.youHave} <strong>{unreadMessages}</strong>{" "}
+              {unreadMessages === 1 ? t.unreadOne : t.unreadMany}
             </p>
             <Button asChild variant="outline" size="sm">
               <Link href="/admin/messages">
-                Read <ArrowRight data-icon="inline-end" aria-hidden />
+                {t.read} <ArrowRight data-icon="inline-end" aria-hidden />
               </Link>
             </Button>
           </CardContent>
@@ -54,17 +57,17 @@ export default async function AdminOverviewPage() {
         <Card>
           <CardHeader>
             <CardTitle className="font-heading text-lg">
-              Recent appointments
+              {t.recentAppts}
             </CardTitle>
             <CardDescription>
               <Link href="/admin/appointments" className="hover:text-foreground">
-                View all →
+                {t.viewAll}
               </Link>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {appointments.length === 0 && (
-              <p className="text-sm text-muted-foreground">No appointments yet.</p>
+              <p className="text-sm text-muted-foreground">{t.noApptsYet}</p>
             )}
             {appointments.map((appointment) => (
               <div
@@ -86,16 +89,18 @@ export default async function AdminOverviewPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-heading text-lg">Recent orders</CardTitle>
+            <CardTitle className="font-heading text-lg">
+              {t.recentOrders}
+            </CardTitle>
             <CardDescription>
               <Link href="/admin/orders" className="hover:text-foreground">
-                View all →
+                {t.viewAll}
               </Link>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             {orders.length === 0 && (
-              <p className="text-sm text-muted-foreground">No orders yet.</p>
+              <p className="text-sm text-muted-foreground">{t.noOrdersYet}</p>
             )}
             {orders.map((order) => (
               <div

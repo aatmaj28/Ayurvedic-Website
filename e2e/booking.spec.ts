@@ -15,11 +15,20 @@ test.describe("appointment booking", () => {
     await page.getByLabel("Centre").click();
     await page.getByRole("option", { name: /^Mumbai —/ }).click();
     await page.getByLabel("Date").fill(tomorrowISO());
-    await page.getByRole("button", { name: "11:00" }).click();
+
+    // Pick the first slot that's actually free (the shared test DB accumulates
+    // bookings across runs, so a hard-coded slot would eventually be taken).
+    const freeSlot = page
+      .locator("button:not([disabled])")
+      .filter({ hasText: /^\d{2}:\d{2}$/ })
+      .first();
+    await expect(freeSlot).toBeVisible();
+    const slot = (await freeSlot.textContent())!.trim();
+    await freeSlot.click();
+
     await page
       .getByLabel(/Notes for the practitioner/)
       .fill("Automated e2e booking");
-
     await expect(page.getByText(/Consultation at/)).toBeVisible();
     await page.getByRole("button", { name: "Confirm booking" }).click();
 
@@ -27,16 +36,15 @@ test.describe("appointment booking", () => {
     await expect(page.getByText("Appointment booked!")).toBeVisible();
 
     const bookedCard = page
-      .locator('[data-slot="card"]', { hasText: "at 11:00" })
+      .locator('[data-slot="card"]', { hasText: `· ${slot}` })
       .filter({ has: page.getByRole("button", { name: "Cancel" }) })
       .first();
     await expect(bookedCard).toBeVisible();
     await bookedCard.getByRole("button", { name: "Cancel" }).click();
-    // After cancelling, the card re-renders without the Cancel button,
-    // so look for an 11:00 card that now shows the Cancelled badge.
+    // After cancelling, that card re-renders with the Cancelled badge.
     await expect(
       page
-        .locator('[data-slot="card"]', { hasText: "at 11:00" })
+        .locator('[data-slot="card"]', { hasText: `· ${slot}` })
         .filter({ hasText: "Cancelled" })
         .first()
     ).toBeVisible();

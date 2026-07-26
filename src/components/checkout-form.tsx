@@ -29,6 +29,42 @@ export type CheckoutProduct = {
   courseDays: number;
 };
 
+export type CheckoutLabels = {
+  deliveryDetails: string;
+  whereSend: string;
+  quantity: string;
+  kitsMax: string;
+  recipientName: string;
+  phone: string;
+  addressLine1: string;
+  addressLine1Placeholder: string;
+  addressLine2: string;
+  addressLine2Placeholder: string;
+  optional: string;
+  city: string;
+  state: string;
+  pincode: string;
+  continueToPayment: string;
+  detailsError: string;
+  pincodeError: string;
+  payment: string;
+  deliveringTo: string;
+  demoTitle: string;
+  demoBody: string;
+  cardNumber: string;
+  expiry: string;
+  cvv: string;
+  pay: string;
+  processing: string;
+  editDelivery: string;
+  orderSummary: string;
+  delivery: string;
+  free: string;
+  total: string;
+  dayCourse: string;
+  dispatchNote: string;
+};
+
 type Address = {
   name: string;
   phone: string;
@@ -49,9 +85,11 @@ function FieldError({ message }: { message?: string }) {
 export function CheckoutForm({
   product,
   defaults,
+  labels,
 }: {
   product: CheckoutProduct;
   defaults: { name: string; phone: string };
+  labels: CheckoutLabels;
 }) {
   const [step, setStep] = useState<"details" | "payment">("details");
   const [quantity, setQuantity] = useState(1);
@@ -77,11 +115,11 @@ export function CheckoutForm({
     const required: (keyof Address)[] = ["name", "phone", "line1", "city", "state", "pincode"];
     const missing = required.some((field) => !address[field].trim());
     if (missing) {
-      setDetailsError("Please fill in all delivery fields before continuing.");
+      setDetailsError(labels.detailsError);
       return;
     }
     if (!/^\d{6}$/.test(address.pincode.trim())) {
-      setDetailsError("PIN code must be 6 digits.");
+      setDetailsError(labels.pincodeError);
       return;
     }
     setDetailsError(null);
@@ -97,21 +135,21 @@ export function CheckoutForm({
           <Card>
             <CardHeader>
               <CardTitle className="font-heading text-xl">
-                Delivery details
+                {labels.deliveryDetails}
               </CardTitle>
               <CardDescription>
-                Where should we send your {product.name}?
+                {labels.whereSend} {product.name}?
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Quantity</Label>
+                <Label>{labels.quantity}</Label>
                 <div className="flex items-center gap-3">
                   <Button
                     type="button"
                     variant="outline"
                     size="icon"
-                    aria-label="Decrease quantity"
+                    aria-label="−"
                     disabled={quantity <= 1}
                     onClick={() => setQuantity((current) => current - 1)}
                   >
@@ -122,20 +160,20 @@ export function CheckoutForm({
                     type="button"
                     variant="outline"
                     size="icon"
-                    aria-label="Increase quantity"
+                    aria-label="+"
                     disabled={quantity >= 5}
                     onClick={() => setQuantity((current) => current + 1)}
                   >
                     <Plus />
                   </Button>
                   <span className="text-sm text-muted-foreground">
-                    kit{quantity > 1 ? "s" : ""} (max 5)
+                    {labels.kitsMax}
                   </span>
                 </div>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="ship-name">Recipient name</Label>
+                  <Label htmlFor="ship-name">{labels.recipientName}</Label>
                   <Input
                     id="ship-name"
                     value={address.name}
@@ -144,7 +182,7 @@ export function CheckoutForm({
                   <FieldError message={fieldError("name")} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ship-phone">Phone</Label>
+                  <Label htmlFor="ship-phone">{labels.phone}</Label>
                   <Input
                     id="ship-phone"
                     type="tel"
@@ -155,10 +193,10 @@ export function CheckoutForm({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ship-line1">Address line 1</Label>
+                <Label htmlFor="ship-line1">{labels.addressLine1}</Label>
                 <Input
                   id="ship-line1"
-                  placeholder="Flat / house no., building, street"
+                  placeholder={labels.addressLine1Placeholder}
                   value={address.line1}
                   onChange={(event) => setField("line1", event.target.value)}
                 />
@@ -166,19 +204,21 @@ export function CheckoutForm({
               </div>
               <div className="space-y-2">
                 <Label htmlFor="ship-line2">
-                  Address line 2{" "}
-                  <span className="text-muted-foreground">(optional)</span>
+                  {labels.addressLine2}{" "}
+                  <span className="text-muted-foreground">
+                    ({labels.optional})
+                  </span>
                 </Label>
                 <Input
                   id="ship-line2"
-                  placeholder="Area, landmark"
+                  placeholder={labels.addressLine2Placeholder}
                   value={address.line2}
                   onChange={(event) => setField("line2", event.target.value)}
                 />
               </div>
               <div className="grid gap-4 sm:grid-cols-3">
                 <div className="space-y-2">
-                  <Label htmlFor="ship-city">City</Label>
+                  <Label htmlFor="ship-city">{labels.city}</Label>
                   <Input
                     id="ship-city"
                     value={address.city}
@@ -187,7 +227,7 @@ export function CheckoutForm({
                   <FieldError message={fieldError("city")} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ship-state">State</Label>
+                  <Label htmlFor="ship-state">{labels.state}</Label>
                   <Input
                     id="ship-state"
                     value={address.state}
@@ -196,7 +236,7 @@ export function CheckoutForm({
                   <FieldError message={fieldError("state")} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ship-pincode">PIN code</Label>
+                  <Label htmlFor="ship-pincode">{labels.pincode}</Label>
                   <Input
                     id="ship-pincode"
                     inputMode="numeric"
@@ -211,7 +251,7 @@ export function CheckoutForm({
                 <p className="text-sm text-destructive">{detailsError}</p>
               )}
               <Button size="lg" className="w-full" onClick={continueToPayment}>
-                Continue to payment
+                {labels.continueToPayment}
               </Button>
             </CardContent>
           </Card>
@@ -219,23 +259,21 @@ export function CheckoutForm({
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 font-heading text-xl">
-                <CreditCard className="size-5" aria-hidden /> Payment
+                <CreditCard className="size-5" aria-hidden /> {labels.payment}
               </CardTitle>
               <CardDescription>
-                Delivering to {address.name}, {address.city} — {address.pincode}
+                {labels.deliveringTo} {address.name}, {address.city} —{" "}
+                {address.pincode}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <Alert>
                 <Lock aria-hidden />
-                <AlertTitle>Demo payment</AlertTitle>
-                <AlertDescription>
-                  This is a portfolio project — no real money moves. The card
-                  below is pre-filled with a standard test number.
-                </AlertDescription>
+                <AlertTitle>{labels.demoTitle}</AlertTitle>
+                <AlertDescription>{labels.demoBody}</AlertDescription>
               </Alert>
               <div className="space-y-2">
-                <Label htmlFor="card-number">Card number</Label>
+                <Label htmlFor="card-number">{labels.cardNumber}</Label>
                 <Input
                   id="card-number"
                   defaultValue="4242 4242 4242 4242"
@@ -244,11 +282,11 @@ export function CheckoutForm({
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="card-expiry">Expiry</Label>
+                  <Label htmlFor="card-expiry">{labels.expiry}</Label>
                   <Input id="card-expiry" defaultValue="12/28" autoComplete="off" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="card-cvv">CVV</Label>
+                  <Label htmlFor="card-cvv">{labels.cvv}</Label>
                   <Input id="card-cvv" defaultValue="123" autoComplete="off" />
                 </div>
               </div>
@@ -267,7 +305,7 @@ export function CheckoutForm({
                   <p className="text-sm text-destructive">{state.message}</p>
                 )}
                 <Button type="submit" size="lg" className="w-full" disabled={pending}>
-                  {pending ? "Processing…" : `Pay ${formatInr(total)}`}
+                  {pending ? labels.processing : `${labels.pay} ${formatInr(total)}`}
                 </Button>
               </form>
               <Button
@@ -276,8 +314,8 @@ export function CheckoutForm({
                 className="w-full"
                 onClick={() => setStep("details")}
               >
-                <ArrowLeft data-icon="inline-start" aria-hidden /> Edit delivery
-                details
+                <ArrowLeft data-icon="inline-start" aria-hidden />{" "}
+                {labels.editDelivery}
               </Button>
             </CardContent>
           </Card>
@@ -287,7 +325,9 @@ export function CheckoutForm({
       <div className="lg:col-span-2">
         <Card>
           <CardHeader>
-            <CardTitle className="font-heading text-lg">Order summary</CardTitle>
+            <CardTitle className="font-heading text-lg">
+              {labels.orderSummary}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between">
@@ -297,17 +337,16 @@ export function CheckoutForm({
               <span>{formatInr(product.priceInr * quantity)}</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Delivery</span>
-              <span>Free</span>
+              <span>{labels.delivery}</span>
+              <span>{labels.free}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold">
-              <span>Total</span>
+              <span>{labels.total}</span>
               <span>{formatInr(total)}</span>
             </div>
             <p className="pt-2 text-xs text-muted-foreground">
-              {product.courseDays}-day course · dispatched from Islampur HQ
-              within 24 hours.
+              {product.courseDays}-{labels.dayCourse} {labels.dispatchNote}
             </p>
           </CardContent>
         </Card>

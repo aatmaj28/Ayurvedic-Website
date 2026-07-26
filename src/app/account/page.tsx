@@ -14,6 +14,7 @@ import { cancelAppointment } from "@/lib/actions/appointments";
 import { APPOINTMENT_STATUS, formatDate, formatInr } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "My Dashboard",
@@ -25,7 +26,8 @@ export default async function AccountPage({
   searchParams: Promise<{ booked?: string }>;
 }) {
   const session = await requireSession();
-  const { booked } = await searchParams;
+  const [{ booked }, dict] = await Promise.all([searchParams, getDictionary()]);
+  const t = dict.account;
 
   const [appointments, orders] = await Promise.all([
     prisma.appointment.findMany({
@@ -46,21 +48,16 @@ export default async function AccountPage({
     <div className="container mx-auto max-w-4xl space-y-10 px-4 py-12">
       <div>
         <h1 className="font-heading text-3xl font-semibold">
-          Namaste, {firstName}
+          {t.greeting}, {firstName}
         </h1>
-        <p className="mt-1 text-muted-foreground">
-          Your appointments and medicine orders, all in one place.
-        </p>
+        <p className="mt-1 text-muted-foreground">{t.subtitle}</p>
       </div>
 
       {booked === "1" && (
         <Alert>
           <CheckCircle2 aria-hidden />
-          <AlertTitle>Appointment booked!</AlertTitle>
-          <AlertDescription>
-            We look forward to seeing you. The consultation fee is payable at
-            the centre.
-          </AlertDescription>
+          <AlertTitle>{t.bookedTitle}</AlertTitle>
+          <AlertDescription>{t.bookedBody}</AlertDescription>
         </Alert>
       )}
 
@@ -68,19 +65,19 @@ export default async function AccountPage({
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 font-heading text-xl font-semibold">
             <CalendarCheck className="size-5 text-primary" aria-hidden />
-            My appointments
+            {t.apptsTitle}
           </h2>
           <Button asChild variant="outline" size="sm">
-            <Link href="/book">Book new</Link>
+            <Link href="/book">{t.bookNew}</Link>
           </Button>
         </div>
         {appointments.length === 0 ? (
           <Card>
             <CardHeader>
               <CardDescription>
-                No appointments yet.{" "}
+                {t.noAppts}{" "}
                 <Link href="/book" className="text-primary underline-offset-4 hover:underline">
-                  Book your first consultation
+                  {t.noApptsCta}
                 </Link>
                 .
               </CardDescription>
@@ -94,14 +91,14 @@ export default async function AccountPage({
                   <div>
                     <p className="font-medium">
                       {appointment.branch.name} · {formatDate(appointment.date)}{" "}
-                      at {appointment.slot}
+                      · {appointment.slot}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {appointment.branch.address}
                     </p>
                     {appointment.notes && (
                       <p className="mt-1 text-sm text-muted-foreground">
-                        Note: {appointment.notes}
+                        {t.note}: {appointment.notes}
                       </p>
                     )}
                   </div>
@@ -115,7 +112,7 @@ export default async function AccountPage({
                         }}
                       >
                         <Button variant="destructive" size="sm" type="submit">
-                          Cancel
+                          {t.cancel}
                         </Button>
                       </form>
                     )}
@@ -131,19 +128,19 @@ export default async function AccountPage({
         <div className="flex items-center justify-between">
           <h2 className="flex items-center gap-2 font-heading text-xl font-semibold">
             <Package className="size-5 text-primary" aria-hidden />
-            My orders
+            {t.ordersTitle}
           </h2>
           <Button asChild variant="outline" size="sm">
-            <Link href="/medicine">Order medicine</Link>
+            <Link href="/medicine">{t.orderMedicine}</Link>
           </Button>
         </div>
         {orders.length === 0 ? (
           <Card>
             <CardHeader>
               <CardDescription>
-                No orders yet.{" "}
+                {t.noOrders}{" "}
                 <Link href="/medicine" className="text-primary underline-offset-4 hover:underline">
-                  Browse medicine kits
+                  {t.noOrdersCta}
                 </Link>
                 .
               </CardDescription>

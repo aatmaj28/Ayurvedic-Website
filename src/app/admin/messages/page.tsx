@@ -11,6 +11,7 @@ import {
 import { toggleMessageRead } from "@/lib/actions/admin";
 import { formatDateTime } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getDictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -18,15 +19,17 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminMessagesPage() {
-  const messages = await prisma.contactMessage.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [messages, dict] = await Promise.all([
+    prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }),
+    getDictionary(),
+  ]);
+  const t = dict.admin;
 
   if (messages.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardDescription>No contact messages yet.</CardDescription>
+          <CardDescription>{t.noMessages}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -41,7 +44,7 @@ export default async function AdminMessagesPage() {
               <CardTitle className="text-base">
                 {message.name}
                 {!message.read && (
-                  <Badge className="ml-2 align-middle">New</Badge>
+                  <Badge className="ml-2 align-middle">{t.newBadge}</Badge>
                 )}
               </CardTitle>
               <span className="text-xs text-muted-foreground">
@@ -64,7 +67,7 @@ export default async function AdminMessagesPage() {
             </p>
             <form action={toggleMessageRead.bind(null, message.id)}>
               <Button size="sm" variant="outline" type="submit">
-                {message.read ? "Mark unread" : "Mark read"}
+                {message.read ? t.markUnread : t.markRead}
               </Button>
             </form>
           </CardContent>

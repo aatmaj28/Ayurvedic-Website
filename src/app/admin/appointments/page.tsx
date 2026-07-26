@@ -12,6 +12,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { updateAppointmentStatus } from "@/lib/actions/admin";
 import { APPOINTMENT_STATUS, formatDate } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Admin · Appointments",
@@ -20,10 +21,14 @@ export const metadata: Metadata = {
 function AppointmentActions({
   appointmentId,
   status,
+  completeLabel,
+  cancelLabel,
   className,
 }: {
   appointmentId: string;
   status: string;
+  completeLabel: string;
+  cancelLabel: string;
   className?: string;
 }) {
   if (status !== APPOINTMENT_STATUS.SCHEDULED) {
@@ -39,7 +44,7 @@ function AppointmentActions({
         )}
       >
         <Button size="sm" variant="outline" type="submit">
-          Mark completed
+          {completeLabel}
         </Button>
       </form>
       <form
@@ -50,7 +55,7 @@ function AppointmentActions({
         )}
       >
         <Button size="sm" variant="destructive" type="submit">
-          Cancel
+          {cancelLabel}
         </Button>
       </form>
     </div>
@@ -58,15 +63,19 @@ function AppointmentActions({
 }
 
 export default async function AdminAppointmentsPage() {
-  const appointments = await prisma.appointment.findMany({
-    include: { user: true, branch: true },
-    orderBy: [{ date: "asc" }, { slot: "asc" }],
-  });
+  const [appointments, dict] = await Promise.all([
+    prisma.appointment.findMany({
+      include: { user: true, branch: true },
+      orderBy: [{ date: "asc" }, { slot: "asc" }],
+    }),
+    getDictionary(),
+  ]);
+  const t = dict.admin;
 
   if (appointments.length === 0) {
     return (
       <div className="rounded-xl border bg-card p-6 text-center text-muted-foreground">
-        No appointments yet.
+        {t.noApptsYet}
       </div>
     );
   }
@@ -96,6 +105,8 @@ export default async function AdminAppointmentsPage() {
             <AppointmentActions
               appointmentId={appointment.id}
               status={appointment.status}
+              completeLabel={t.markCompleted}
+              cancelLabel={t.cancel}
               className="mt-3 flex flex-wrap gap-2"
             />
           </div>
@@ -107,11 +118,11 @@ export default async function AdminAppointmentsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Patient</TableHead>
-              <TableHead>Centre</TableHead>
-              <TableHead>Date &amp; slot</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t.colPatient}</TableHead>
+              <TableHead>{t.colCentre}</TableHead>
+              <TableHead>{t.colDateSlot}</TableHead>
+              <TableHead>{t.colStatus}</TableHead>
+              <TableHead className="text-right">{t.colActions}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -134,6 +145,8 @@ export default async function AdminAppointmentsPage() {
                   <AppointmentActions
                     appointmentId={appointment.id}
                     status={appointment.status}
+                    completeLabel={t.markCompleted}
+                    cancelLabel={t.cancel}
                     className="flex justify-end gap-2"
                   />
                 </TableCell>

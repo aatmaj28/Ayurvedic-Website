@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ORDER_STATUS_LABELS } from "@/lib/constants";
+import { getDictionary } from "@/i18n";
 import { cn } from "@/lib/utils";
 
 const STYLES: Record<string, string> = {
@@ -13,16 +13,12 @@ const STYLES: Record<string, string> = {
   CANCELLED: "bg-destructive/10 text-destructive border-transparent",
 };
 
-const LABELS: Record<string, string> = {
-  ...ORDER_STATUS_LABELS,
-  SCHEDULED: "Scheduled",
-  COMPLETED: "Completed",
-};
-
-export function StatusBadge({ status }: { status: string }) {
+export async function StatusBadge({ status }: { status: string }) {
+  const dict = await getDictionary();
+  const label = dict.status[status as keyof typeof dict.status] ?? status;
   return (
     <Badge variant="outline" className={cn(STYLES[status])}>
-      {LABELS[status] ?? status}
+      {label}
     </Badge>
   );
 }

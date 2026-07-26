@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { PATIENT, login } from "./helpers";
 
 test.describe("internationalization", () => {
   test("switching to Marathi translates the page and sets html lang", async ({
@@ -37,6 +38,22 @@ test.describe("internationalization", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "mr");
     await expect(
       page.getByRole("heading", { name: /कावीळ समजून घ्या/ })
+    ).toBeVisible();
+  });
+
+  test("the logged-in dashboard is translated too", async ({ page }) => {
+    // Log in while the UI is English, then switch language on the dashboard.
+    await login(page, PATIENT);
+    await page.getByRole("button", { name: "Language" }).click();
+    await page.getByRole("menuitem", { name: "मराठी" }).click();
+
+    await expect(page.locator("html")).toHaveAttribute("lang", "mr");
+    await expect(page.getByRole("heading", { name: /नमस्कार/ })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "माझे अपॉइंटमेंट" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "माझे ऑर्डर" })
     ).toBeVisible();
   });
 

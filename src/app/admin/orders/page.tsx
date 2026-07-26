@@ -11,13 +11,9 @@ import {
 } from "@/components/ui/table";
 import { StatusBadge } from "@/components/status-badge";
 import { advanceOrder, cancelOrder } from "@/lib/actions/admin";
-import {
-  ORDER_STATUS_FLOW,
-  ORDER_STATUS_LABELS,
-  formatDate,
-  formatInr,
-} from "@/lib/constants";
+import { ORDER_STATUS_FLOW, formatDate, formatInr } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Admin · Orders",
@@ -35,11 +31,15 @@ function OrderActions({
   orderId,
   status,
   next,
+  nextLabel,
+  cancelLabel,
   className,
 }: {
   orderId: string;
   status: string;
   next: string | null;
+  nextLabel: string | null;
+  cancelLabel: string;
   className?: string;
 }) {
   if (!next && (status === "DELIVERED" || status === "CANCELLED")) {
@@ -50,14 +50,14 @@ function OrderActions({
       {next && (
         <form action={advanceOrder.bind(null, orderId)}>
           <Button size="sm" variant="outline" type="submit">
-            → {ORDER_STATUS_LABELS[next]}
+            → {nextLabel}
           </Button>
         </form>
       )}
       {status !== "DELIVERED" && status !== "CANCELLED" && (
         <form action={cancelOrder.bind(null, orderId)}>
           <Button size="sm" variant="destructive" type="submit">
-            Cancel
+            {cancelLabel}
           </Button>
         </form>
       )}
@@ -66,18 +66,26 @@ function OrderActions({
 }
 
 export default async function AdminOrdersPage() {
-  const orders = await prisma.order.findMany({
-    include: { user: true, items: { include: { product: true } } },
-    orderBy: { createdAt: "desc" },
-  });
+  const [orders, dict] = await Promise.all([
+    prisma.order.findMany({
+      include: { user: true, items: { include: { product: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+    getDictionary(),
+  ]);
+  const t = dict.admin;
 
   if (orders.length === 0) {
     return (
       <div className="rounded-xl border bg-card p-6 text-center text-muted-foreground">
-        No orders yet.
+        {t.noOrdersYet}
       </div>
     );
   }
+
+  const itemsSummary = (
+    items: { product: { name: string }; quantity: number }[]
+  ) => items.map((item) => `${item.product.name} × ${item.quantity}`).join(", ");
 
   return (
     <>
@@ -104,15 +112,16 @@ export default async function AdminOrdersPage() {
                 {formatInr(order.totalInr)}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {formatDate(order.createdAt)} ·{" "}
-                {order.items
-                  .map((item) => `${item.product.name} × ${item.quantity}`)
-                  .join(", ")}
+                {formatDate(order.createdAt)} · {itemsSummary(order.items)}
               </p>
               <OrderActions
                 orderId={order.id}
                 status={order.status}
                 next={next}
+                nextLabel={
+                  next ? dict.status[next as keyof typeof dict.status] : null
+                }
+                cancelLabel={t.cancel}
                 className="mt-3 flex flex-wrap gap-2"
               />
             </div>
@@ -125,11 +134,11 @@ export default async function AdminOrdersPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Order</TableHead>
-              <TableHead>Customer</TableHead>
-              <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t.colOrder}</TableHead>
+              <TableHead>{t.colCustomer}</TableHead>
+              <TableHead>{t.colTotal}</TableHead>
+              <TableHead>{t.colStatus}</TableHead>
+              <TableHead className="text-right">{t.colActions}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -145,10 +154,7 @@ export default async function AdminOrdersPage() {
                       {order.number}
                     </Link>
                     <p className="text-xs text-muted-foreground">
-                      {formatDate(order.createdAt)} ·{" "}
-                      {order.items
-                        .map((item) => `${item.product.name} × ${item.quantity}`)
-                        .join(", ")}
+                      {formatDate(order.createdAt)} · {itemsSummary(order.items)}
                     </p>
                   </TableCell>
                   <TableCell>
@@ -166,6 +172,12 @@ export default async function AdminOrdersPage() {
                       orderId={order.id}
                       status={order.status}
                       next={next}
+                      nextLabel={
+                        next
+                          ? dict.status[next as keyof typeof dict.status]
+                          : null
+                      }
+                      cancelLabel={t.cancel}
                       className="flex justify-end gap-2"
                     />
                   </TableCell>

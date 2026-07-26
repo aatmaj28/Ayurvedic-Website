@@ -16,6 +16,7 @@ import { StatusBadge } from "@/components/status-badge";
 import { formatDate, formatInr } from "@/lib/constants";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
+import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -29,7 +30,12 @@ export default async function OrderDetailPage({
   searchParams: Promise<{ placed?: string }>;
 }) {
   const session = await requireSession();
-  const [{ id }, { placed }] = await Promise.all([params, searchParams]);
+  const [{ id }, { placed }, dict] = await Promise.all([
+    params,
+    searchParams,
+    getDictionary(),
+  ]);
+  const t = dict.account;
 
   const order = await prisma.order.findUnique({
     where: { id },
@@ -50,18 +56,15 @@ export default async function OrderDetailPage({
     <div className="container mx-auto max-w-3xl space-y-6 px-4 py-12">
       <Button asChild variant="ghost" size="sm">
         <Link href="/account">
-          <ArrowLeft data-icon="inline-start" aria-hidden /> Back to dashboard
+          <ArrowLeft data-icon="inline-start" aria-hidden /> {t.backToDashboard}
         </Link>
       </Button>
 
       {placed === "1" && (
         <Alert>
           <CheckCircle2 aria-hidden />
-          <AlertTitle>Order placed — thank you!</AlertTitle>
-          <AlertDescription>
-            Your kit will be dispatched from our Islampur HQ within 24 hours.
-            Track its progress below. (Demo payment — no real charge was made.)
-          </AlertDescription>
+          <AlertTitle>{t.placedTitle}</AlertTitle>
+          <AlertDescription>{t.placedBody}</AlertDescription>
         </Alert>
       )}
 
@@ -69,7 +72,7 @@ export default async function OrderDetailPage({
         <div>
           <h1 className="font-heading text-3xl font-semibold">{order.number}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Placed on {formatDate(order.createdAt)} · Payment ref:{" "}
+            {t.placedOn} {formatDate(order.createdAt)} · {t.paymentRef}:{" "}
             {order.paymentRef}
           </p>
         </div>
@@ -79,7 +82,7 @@ export default async function OrderDetailPage({
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="font-heading text-lg">Tracking</CardTitle>
+            <CardTitle className="font-heading text-lg">{t.tracking}</CardTitle>
           </CardHeader>
           <CardContent>
             <OrderTimeline events={order.events} currentStatus={order.status} />
@@ -89,7 +92,7 @@ export default async function OrderDetailPage({
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="font-heading text-lg">Items</CardTitle>
+              <CardTitle className="font-heading text-lg">{t.items}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               {order.items.map((item) => (
@@ -101,12 +104,12 @@ export default async function OrderDetailPage({
                 </div>
               ))}
               <div className="flex justify-between text-muted-foreground">
-                <span>Delivery</span>
-                <span>Free</span>
+                <span>{t.delivery}</span>
+                <span>{dict.common.free}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-semibold">
-                <span>Total</span>
+                <span>{t.total}</span>
                 <span>{formatInr(order.totalInr)}</span>
               </div>
             </CardContent>
@@ -115,7 +118,7 @@ export default async function OrderDetailPage({
           <Card>
             <CardHeader>
               <CardTitle className="font-heading text-lg">
-                Delivery address
+                {t.deliveryAddress}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground">
