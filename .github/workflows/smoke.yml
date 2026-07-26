@@ -1,0 +1,24 @@
+name: Smoke (production)
+
+# Verifies the live site is healthy. Runs on a schedule (uptime monitoring)
+# and can be triggered by hand after a manual `vercel --prod` deploy.
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Base URL to smoke test"
+        required: false
+        default: "https://ayurvedic-website-ten.vercel.app"
+  schedule:
+    - cron: "0 */6 * * *" # every 6 hours
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Smoke test the live site
+        run: node scripts/smoke.mjs "${{ github.event.inputs.url || 'https://ayurvedic-website-ten.vercel.app' }}"

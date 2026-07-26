@@ -94,6 +94,31 @@ npx prisma migrate deploy && npx prisma db seed
 AUTH_RATE_LIMIT=off npm run test:e2e
 ```
 
+## Deploying
+
+Hosted on Vercel with a Neon Postgres database. Set `DATABASE_URL`,
+`BETTER_AUTH_SECRET`, and `BETTER_AUTH_URL` (a full absolute URL, e.g.
+`https://your-app.vercel.app`) in the Vercel project's environment variables.
+
+```bash
+npm run deploy   # vercel --prod --yes && npm run smoke
+```
+
+The `smoke` script (`scripts/smoke.mjs`) hits the live URL and fails if public
+pages don't return 200, the auth layer is unhealthy, or protected routes stop
+redirecting — the class of production-only failure that CI can't catch because
+it runs against `next start` with test env vars. A scheduled GitHub Action
+(`.github/workflows/smoke.yml`) also runs it every 6 hours as an uptime check.
+
+```bash
+npm run smoke                                   # checks production
+node scripts/smoke.mjs http://localhost:3000    # or any base URL
+```
+
+**If a `git push` doesn't trigger a deploy**, the GitHub ↔ Vercel integration
+needs reconnecting: Vercel dashboard → Project → Settings → Git → connect the
+repository. Until then, deploy with `npm run deploy`.
+
 ## Roadmap
 
 - Real payment gateway (Stripe / Razorpay) behind the existing checkout action

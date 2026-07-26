@@ -13,7 +13,9 @@
     "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "smoke": "node scripts/smoke.mjs",
+    "deploy": "vercel --prod --yes && npm run smoke"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",
