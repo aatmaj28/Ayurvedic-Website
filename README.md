@@ -26,7 +26,7 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 **Patients**
 - Email/password auth (better-auth) with session-gated routes
 - Book consultations: pick a centre, date, and time slot — already-booked slots are disabled live
-- Order medicine kits: quantity → delivery address → demo payment → order confirmation
+- Order medicine kits: quantity → delivery address → Stripe Checkout (test mode) → order confirmation
 - Dashboard with appointments (cancellable) and orders with a live tracking timeline (placed → confirmed → shipped → out for delivery → delivered)
 
 **Clinic admin** (role-based)
@@ -43,9 +43,16 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 | UI        | Tailwind CSS v4 + shadcn/ui (Radix), lucide-react icons        |
 | Database  | PostgreSQL (Neon) via Prisma ORM                               |
 | Auth      | better-auth (email/password, sessions, role-based access)      |
+| Payments  | Stripe Checkout (hosted, test mode)                            |
 | Validation| Zod                                                            |
 
-The payment step is an intentional mock (this is a portfolio project) — the server action is structured so a real gateway (Stripe / Razorpay) can slot in where the mock reference is generated.
+Checkout uses **Stripe Checkout** in test mode: the payment step creates a
+hosted Checkout Session and redirects to Stripe; the order is created only
+after payment succeeds (verified on the return trip at `/order/success`, with
+idempotent creation so a refresh can't double-order). When `STRIPE_SECRET_KEY`
+isn't configured (local dev / CI / preview), it transparently falls back to a
+built-in mock so the app always works. Pay with test card
+`4242 4242 4242 4242`, any future expiry, any CVC.
 
 ## Getting started
 
@@ -121,7 +128,7 @@ repository. Until then, deploy with `npm run deploy`.
 
 ## Roadmap
 
-- Real payment gateway (Stripe / Razorpay) behind the existing checkout action
+- Stripe webhook (`checkout.session.completed`) to confirm payments independently of the return redirect
 - Email notifications for bookings and order status changes
 
 ## Disclaimer

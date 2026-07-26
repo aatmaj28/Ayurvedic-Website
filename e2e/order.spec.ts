@@ -24,7 +24,7 @@ test.describe("medicine order", () => {
     await expect(page.getByLabel("Card number")).toHaveValue(
       "4242 4242 4242 4242"
     );
-    await page.getByRole("button", { name: /^Pay ₹/ }).click();
+    await page.getByRole("button", { name: /^Pay .*₹/ }).click();
 
     await page.waitForURL(/\/account\/orders\/.+\?placed=1/);
     await expect(page.getByText("Order placed — thank you!")).toBeVisible();

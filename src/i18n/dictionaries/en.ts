@@ -295,6 +295,10 @@ const en = {
     demoTitle: "Demo payment",
     demoBody:
       "This is a portfolio project — no real money moves. The card below is pre-filled with a standard test number.",
+    stripeTitle: "Secure payment via Stripe",
+    stripeBody:
+      "You'll be redirected to Stripe to pay securely, then brought back here. Test mode: use card 4242 4242 4242 4242, any future expiry, any CVC.",
+    payWithStripe: "Pay with Stripe",
     cardNumber: "Card number",
     expiry: "Expiry",
     cvv: "CVV",

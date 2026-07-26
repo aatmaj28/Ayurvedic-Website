@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CheckoutForm } from "@/components/checkout-form";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
+import { stripeEnabled } from "@/lib/stripe";
 import { getDictionary } from "@/i18n";
 
 export const metadata: Metadata = {
@@ -43,6 +44,7 @@ export default async function OrderPage({
           optional: dict.common.optional,
           free: dict.common.free,
         }}
+        stripeEnabled={stripeEnabled}
       />
     </div>
   );

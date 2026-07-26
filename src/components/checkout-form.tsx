@@ -14,11 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import {
-  placeOrder,
-  type CheckoutField,
-  type CheckoutFormState,
-} from "@/lib/actions/orders";
+import { createCheckoutSession, placeOrder } from "@/lib/actions/orders";
+import type { CheckoutField, CheckoutFormState } from "@/lib/orders";
 import { formatInr } from "@/lib/constants";
 
 export type CheckoutProduct = {
@@ -51,6 +48,9 @@ export type CheckoutLabels = {
   deliveringTo: string;
   demoTitle: string;
   demoBody: string;
+  stripeTitle: string;
+  stripeBody: string;
+  payWithStripe: string;
   cardNumber: string;
   expiry: string;
   cvv: string;
@@ -86,10 +86,12 @@ export function CheckoutForm({
   product,
   defaults,
   labels,
+  stripeEnabled,
 }: {
   product: CheckoutProduct;
   defaults: { name: string; phone: string };
   labels: CheckoutLabels;
+  stripeEnabled: boolean;
 }) {
   const [step, setStep] = useState<"details" | "payment">("details");
   const [quantity, setQuantity] = useState(1);
@@ -103,7 +105,10 @@ export function CheckoutForm({
     pincode: "",
   });
   const [detailsError, setDetailsError] = useState<string | null>(null);
-  const [state, formAction, pending] = useActionState(placeOrder, initialState);
+  const [state, formAction, pending] = useActionState(
+    stripeEnabled ? createCheckoutSession : placeOrder,
+    initialState
+  );
 
   const total = product.priceInr * quantity;
 
@@ -267,29 +272,43 @@ export function CheckoutForm({
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Alert>
-                <Lock aria-hidden />
-                <AlertTitle>{labels.demoTitle}</AlertTitle>
-                <AlertDescription>{labels.demoBody}</AlertDescription>
-              </Alert>
-              <div className="space-y-2">
-                <Label htmlFor="card-number">{labels.cardNumber}</Label>
-                <Input
-                  id="card-number"
-                  defaultValue="4242 4242 4242 4242"
-                  autoComplete="off"
-                />
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="card-expiry">{labels.expiry}</Label>
-                  <Input id="card-expiry" defaultValue="12/28" autoComplete="off" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="card-cvv">{labels.cvv}</Label>
-                  <Input id="card-cvv" defaultValue="123" autoComplete="off" />
-                </div>
-              </div>
+              {stripeEnabled ? (
+                <Alert>
+                  <Lock aria-hidden />
+                  <AlertTitle>{labels.stripeTitle}</AlertTitle>
+                  <AlertDescription>{labels.stripeBody}</AlertDescription>
+                </Alert>
+              ) : (
+                <>
+                  <Alert>
+                    <Lock aria-hidden />
+                    <AlertTitle>{labels.demoTitle}</AlertTitle>
+                    <AlertDescription>{labels.demoBody}</AlertDescription>
+                  </Alert>
+                  <div className="space-y-2">
+                    <Label htmlFor="card-number">{labels.cardNumber}</Label>
+                    <Input
+                      id="card-number"
+                      defaultValue="4242 4242 4242 4242"
+                      autoComplete="off"
+                    />
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="card-expiry">{labels.expiry}</Label>
+                      <Input
+                        id="card-expiry"
+                        defaultValue="12/28"
+                        autoComplete="off"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="card-cvv">{labels.cvv}</Label>
+                      <Input id="card-cvv" defaultValue="123" autoComplete="off" />
+                    </div>
+                  </div>
+                </>
+              )}
 
               <form action={formAction} className="space-y-4">
                 <input type="hidden" name="productSlug" value={product.slug} />
@@ -305,7 +324,9 @@ export function CheckoutForm({
                   <p className="text-sm text-destructive">{state.message}</p>
                 )}
                 <Button type="submit" size="lg" className="w-full" disabled={pending}>
-                  {pending ? labels.processing : `${labels.pay} ${formatInr(total)}`}
+                  {pending
+                    ? labels.processing
+                    : `${stripeEnabled ? labels.payWithStripe : labels.pay} · ${formatInr(total)}`}
                 </Button>
               </form>
               <Button
