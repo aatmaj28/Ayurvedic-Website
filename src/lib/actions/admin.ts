@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/session";
 import { sendPushToUser } from "@/lib/push";
+import { sendEmailToUser } from "@/lib/email";
 import {
   APPOINTMENT_STATUS,
   ORDER_STATUS_FLOW,
@@ -28,13 +29,22 @@ export async function updateAppointmentStatus(
     include: { branch: true },
   });
 
+  const apptTitle =
+    status === APPOINTMENT_STATUS.COMPLETED
+      ? "Appointment completed"
+      : "Appointment cancelled";
+  const apptDetails = `${appointment.branch.name} · ${formatDate(appointment.date)} · ${appointment.slot}`;
   await sendPushToUser(appointment.userId, {
-    title:
-      status === APPOINTMENT_STATUS.COMPLETED
-        ? "Appointment completed"
-        : "Appointment cancelled",
-    body: `${appointment.branch.name} · ${formatDate(appointment.date)} · ${appointment.slot}`,
+    title: apptTitle,
+    body: apptDetails,
     url: "/account",
+  });
+  await sendEmailToUser(appointment.userId, {
+    subject: `${apptTitle} — ${appointment.branch.name}`,
+    heading: apptTitle,
+    body: apptDetails,
+    ctaLabel: "View my appointments",
+    ctaPath: "/account",
   });
 
   revalidatePath("/admin/appointments");
@@ -65,6 +75,13 @@ export async function advanceOrder(orderId: string) {
     body: ORDER_STATUS_LABELS[nextStatus],
     url: `/account/orders/${orderId}`,
   });
+  await sendEmailToUser(order.userId, {
+    subject: `Order ${order.number}: ${ORDER_STATUS_LABELS[nextStatus]}`,
+    heading: ORDER_STATUS_LABELS[nextStatus],
+    body: `Your order <strong>${order.number}</strong> is now: <strong>${ORDER_STATUS_LABELS[nextStatus]}</strong>.`,
+    ctaLabel: "Track my order",
+    ctaPath: `/account/orders/${orderId}`,
+  });
 
   revalidatePath("/admin/orders");
   revalidatePath(`/account/orders/${orderId}`);
@@ -89,6 +106,13 @@ export async function cancelOrder(orderId: string) {
     title: `Order ${order.number}`,
     body: ORDER_STATUS_LABELS.CANCELLED,
     url: `/account/orders/${orderId}`,
+  });
+  await sendEmailToUser(order.userId, {
+    subject: `Order ${order.number}: ${ORDER_STATUS_LABELS.CANCELLED}`,
+    heading: "Order cancelled",
+    body: `Your order <strong>${order.number}</strong> has been cancelled by the clinic. If you have questions, just reply to this email or call your nearest centre.`,
+    ctaLabel: "View order",
+    ctaPath: `/account/orders/${orderId}`,
   });
 
   revalidatePath("/admin/orders");

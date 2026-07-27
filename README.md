@@ -29,6 +29,7 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 - Order medicine kits: quantity → delivery address → Stripe Checkout (test mode) → order confirmation
 - Dashboard with appointments (cancellable) and orders with a live tracking timeline (placed → confirmed → shipped → out for delivery → delivered)
 - Web push notifications (opt-in from the dashboard): booking confirmations, order receipts, and status updates land on the patient's device the moment they happen — no external service, standard Web Push with VAPID
+- Email notifications (Resend, from care@kavilcure.me): booking confirmations, order receipts, and status-change emails with a branded template; gracefully disabled when `RESEND_API_KEY` is unset
 
 **Clinic admin** (role-based)
 - Manage appointments (complete / cancel)
@@ -130,7 +131,6 @@ repository. Until then, deploy with `npm run deploy`.
 ## Roadmap
 
 - Stripe webhook (`checkout.session.completed`) to confirm payments independently of the return redirect
-- Email notifications for bookings and order status changes
 
 ## Disclaimer
 

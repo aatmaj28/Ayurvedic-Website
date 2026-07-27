@@ -6,6 +6,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
 import { sendPushToUser } from "@/lib/push";
+import { sendEmailToUser } from "@/lib/email";
 import {
   APPOINTMENT_SLOTS,
   APPOINTMENT_STATUS,
@@ -112,6 +113,13 @@ export async function createAppointment(
     title: "Appointment booked ✅",
     body: `${branch.name} · ${formatDate(date)} · ${parsed.data.slot}`,
     url: "/account",
+  });
+  await sendEmailToUser(session.user.id, {
+    subject: `Appointment confirmed — ${branch.name}, ${formatDate(date)}`,
+    heading: "Your consultation is booked ✅",
+    body: `We look forward to seeing you at <strong>${branch.name}</strong> on <strong>${formatDate(date)}</strong> at <strong>${parsed.data.slot}</strong>.<br/><br/>${branch.address}<br/><br/>The consultation fee of ₹${branch.consultationFee} is payable at the centre. If you can't make it, you can cancel from your dashboard.`,
+    ctaLabel: "View my appointments",
+    ctaPath: "/account",
   });
 
   revalidatePath("/account");

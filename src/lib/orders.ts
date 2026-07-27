@@ -3,7 +3,8 @@ import type Stripe from "stripe";
 import { z } from "zod";
 import { prisma } from "./prisma";
 import { sendPushToUser } from "./push";
-import { generateOrderNumber } from "./constants";
+import { sendEmailToUser } from "./email";
+import { formatInr, generateOrderNumber } from "./constants";
 
 export const checkoutSchema = z.object({
   productSlug: z.string().min(1),
@@ -121,6 +122,13 @@ export async function createOrderForUser(opts: {
     title: `Order ${order.number} placed ✅`,
     body: "We'll dispatch it from Islampur HQ within 24 hours.",
     url: `/account/orders/${order.id}`,
+  });
+  await sendEmailToUser(userId, {
+    subject: `Order ${order.number} confirmed — ${formatInr(order.totalInr)}`,
+    heading: "Thank you — your order is confirmed ✅",
+    body: `Order <strong>${order.number}</strong> (${formatInr(order.totalInr)}) will be dispatched from our Islampur HQ within 24 hours to:<br/><br/>${address.name}<br/>${address.line1}${address.line2 ? `<br/>${address.line2}` : ""}<br/>${address.city}, ${address.state} — ${address.pincode}<br/><br/>You can track every step from your dashboard.`,
+    ctaLabel: "Track my order",
+    ctaPath: `/account/orders/${order.id}`,
   });
 
   return order;
