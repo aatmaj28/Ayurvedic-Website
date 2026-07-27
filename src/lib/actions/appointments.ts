@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
-import { APPOINTMENT_SLOTS, APPOINTMENT_STATUS } from "@/lib/constants";
+import { sendPushToUser } from "@/lib/push";
+import {
+  APPOINTMENT_SLOTS,
+  APPOINTMENT_STATUS,
+  formatDate,
+} from "@/lib/constants";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MAX_ADVANCE_DAYS = 30;
@@ -101,6 +106,12 @@ export async function createAppointment(
       slot: parsed.data.slot,
       notes: parsed.data.notes || null,
     },
+  });
+
+  await sendPushToUser(session.user.id, {
+    title: "Appointment booked ✅",
+    body: `${branch.name} · ${formatDate(date)} · ${parsed.data.slot}`,
+    url: "/account",
   });
 
   revalidatePath("/account");

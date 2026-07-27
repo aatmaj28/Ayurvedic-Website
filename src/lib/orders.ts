@@ -2,6 +2,7 @@ import "server-only";
 import type Stripe from "stripe";
 import { z } from "zod";
 import { prisma } from "./prisma";
+import { sendPushToUser } from "./push";
 import { generateOrderNumber } from "./constants";
 
 export const checkoutSchema = z.object({
@@ -90,7 +91,7 @@ export async function createOrderForUser(opts: {
   paidNote: string;
 }) {
   const { userId, product, quantity, address, paymentRef, paidNote } = opts;
-  return prisma.order.create({
+  const order = await prisma.order.create({
     data: {
       number: generateOrderNumber(),
       userId,
@@ -115,6 +116,14 @@ export async function createOrderForUser(opts: {
       events: { create: [{ status: "PLACED", note: paidNote }] },
     },
   });
+
+  await sendPushToUser(userId, {
+    title: `Order ${order.number} placed ✅`,
+    body: "We'll dispatch it from Islampur HQ within 24 hours.",
+    url: `/account/orders/${order.id}`,
+  });
+
+  return order;
 }
 
 // Turns a *paid* Stripe Checkout Session into an order. Idempotent (keyed on

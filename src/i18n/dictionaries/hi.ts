@@ -273,6 +273,16 @@ const hi: Dictionary = {
     delivery: "डिलीवरी",
     total: "कुल",
     deliveryAddress: "डिलीवरी पता",
+    pushTitle: "पुश सूचनाएँ",
+    pushBody:
+      "आपका ऑर्डर भेजे जाने या अपॉइंटमेंट बदलने पर इस डिवाइस पर सूचना पाएँ।",
+    pushEnable: "चालू करें",
+    pushDisable: "बंद करें",
+    pushEnabled: "इस डिवाइस पर सूचनाएँ चालू हैं।",
+    pushWorking: "चालू हो रहा है…",
+    pushUnsupported: "इस ब्राउज़र में सूचनाएँ समर्थित नहीं हैं।",
+    pushDenied: "आपकी ब्राउज़र सेटिंग्स में सूचनाएँ अवरुद्ध हैं।",
+    pushError: "सूचनाएँ चालू नहीं हो सकीं। कृपया फिर से प्रयास करें।",
   },
   checkout: {
     title: "चेकआउट",

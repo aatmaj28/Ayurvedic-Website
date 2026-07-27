@@ -28,6 +28,7 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 - Book consultations: pick a centre, date, and time slot — already-booked slots are disabled live
 - Order medicine kits: quantity → delivery address → Stripe Checkout (test mode) → order confirmation
 - Dashboard with appointments (cancellable) and orders with a live tracking timeline (placed → confirmed → shipped → out for delivery → delivered)
+- Web push notifications (opt-in from the dashboard): booking confirmations, order receipts, and status updates land on the patient's device the moment they happen — no external service, standard Web Push with VAPID
 
 **Clinic admin** (role-based)
 - Manage appointments (complete / cancel)

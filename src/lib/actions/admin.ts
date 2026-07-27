@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/session";
-import { APPOINTMENT_STATUS, ORDER_STATUS_FLOW } from "@/lib/constants";
+import { sendPushToUser } from "@/lib/push";
+import {
+  APPOINTMENT_STATUS,
+  ORDER_STATUS_FLOW,
+  ORDER_STATUS_LABELS,
+  formatDate,
+} from "@/lib/constants";
 
 export async function updateAppointmentStatus(
   appointmentId: string,
@@ -16,10 +22,21 @@ export async function updateAppointmentStatus(
   ) {
     return;
   }
-  await prisma.appointment.update({
+  const appointment = await prisma.appointment.update({
     where: { id: appointmentId },
     data: { status },
+    include: { branch: true },
   });
+
+  await sendPushToUser(appointment.userId, {
+    title:
+      status === APPOINTMENT_STATUS.COMPLETED
+        ? "Appointment completed"
+        : "Appointment cancelled",
+    body: `${appointment.branch.name} · ${formatDate(appointment.date)} · ${appointment.slot}`,
+    url: "/account",
+  });
+
   revalidatePath("/admin/appointments");
   revalidatePath("/account");
 }
@@ -42,6 +59,13 @@ export async function advanceOrder(orderId: string) {
       events: { create: [{ status: nextStatus }] },
     },
   });
+
+  await sendPushToUser(order.userId, {
+    title: `Order ${order.number}`,
+    body: ORDER_STATUS_LABELS[nextStatus],
+    url: `/account/orders/${orderId}`,
+  });
+
   revalidatePath("/admin/orders");
   revalidatePath(`/account/orders/${orderId}`);
   revalidatePath("/account");
@@ -60,6 +84,13 @@ export async function cancelOrder(orderId: string) {
       events: { create: [{ status: "CANCELLED", note: "Cancelled by clinic" }] },
     },
   });
+
+  await sendPushToUser(order.userId, {
+    title: `Order ${order.number}`,
+    body: ORDER_STATUS_LABELS.CANCELLED,
+    url: `/account/orders/${orderId}`,
+  });
+
   revalidatePath("/admin/orders");
   revalidatePath(`/account/orders/${orderId}`);
   revalidatePath("/account");

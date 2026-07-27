@@ -271,6 +271,16 @@ const en = {
     delivery: "Delivery",
     total: "Total",
     deliveryAddress: "Delivery address",
+    pushTitle: "Push notifications",
+    pushBody:
+      "Get notified on this device when your order ships or an appointment changes.",
+    pushEnable: "Enable",
+    pushDisable: "Turn off",
+    pushEnabled: "Notifications enabled on this device.",
+    pushWorking: "Enabling…",
+    pushUnsupported: "Notifications aren't supported in this browser.",
+    pushDenied: "Notifications are blocked in your browser settings.",
+    pushError: "Couldn't enable notifications. Please try again.",
   },
   checkout: {
     title: "Checkout",

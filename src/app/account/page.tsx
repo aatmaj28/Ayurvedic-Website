@@ -9,6 +9,7 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import { PushNotificationsCard } from "@/components/push-notifications-card";
 import { StatusBadge } from "@/components/status-badge";
 import { cancelAppointment } from "@/lib/actions/appointments";
 import { APPOINTMENT_STATUS, formatDate, formatInr } from "@/lib/constants";
@@ -59,6 +60,23 @@ export default async function AccountPage({
           <AlertTitle>{t.bookedTitle}</AlertTitle>
           <AlertDescription>{t.bookedBody}</AlertDescription>
         </Alert>
+      )}
+
+      {process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && (
+        <PushNotificationsCard
+          vapidPublicKey={process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY}
+          labels={{
+            title: t.pushTitle,
+            body: t.pushBody,
+            enable: t.pushEnable,
+            disable: t.pushDisable,
+            enabled: t.pushEnabled,
+            working: t.pushWorking,
+            unsupported: t.pushUnsupported,
+            denied: t.pushDenied,
+            error: t.pushError,
+          }}
+        />
       )}
 
       <section className="space-y-4">

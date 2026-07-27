@@ -28,6 +28,10 @@ jobs:
       BETTER_AUTH_SECRET: ci-only-secret-not-used-anywhere-else
       BETTER_AUTH_URL: http://localhost:3000
       AUTH_RATE_LIMIT: "off"
+      # Throwaway VAPID pair so CI exercises the full push path (no real
+      # subscriptions are ever signed with these).
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: BIOYe67YBQidUJHg5omXRBrd0T7L75fPw7c-gofXS9hKzsm6XtRdu5sH4D1b7z3IiaGyeNCHQoZArOgLDWIkIF8
+      VAPID_PRIVATE_KEY: GTYc6ZP1orHeUub3mmfaOyeUqhDr-Pexk8YAALDYW0g
     steps:
       - uses: actions/checkout@v4
 
