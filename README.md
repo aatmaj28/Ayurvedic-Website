@@ -4,7 +4,7 @@
 
 A full-stack healthcare platform for a family-run Ayurvedic jaundice (kavil / kamini) practice in Maharashtra: online consultation booking, medicine-kit ordering with order tracking, and a clinic admin panel.
 
-**🔗 Live demo:** [ayurvedic-website-ten.vercel.app](https://ayurvedic-website-ten.vercel.app) — demo logins below.
+**🔗 Live demo:** [kavilcure.me](https://kavilcure.me) — demo logins below.
 
 ![Kavil-Cure homepage](docs/screenshot-home.png)
 
@@ -130,7 +130,7 @@ repository. Until then, deploy with `npm run deploy`.
 
 ## Roadmap
 
-- Stripe webhook (`checkout.session.completed`) to confirm payments independently of the return redirect
+- Native mobile app wrapper (the PWA push already works on Android)
 
 ## Disclaimer
 

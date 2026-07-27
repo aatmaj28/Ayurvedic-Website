@@ -25,6 +25,13 @@ function resolveBaseURL(): string | undefined {
 
 export const auth = betterAuth({
   baseURL: resolveBaseURL(),
+  // The site is reachable on both the custom domain and the vercel.app
+  // alias; auth POSTs must be accepted from either origin.
+  trustedOrigins: [
+    "https://kavilcure.me",
+    "https://www.kavilcure.me",
+    "https://ayurvedic-website-ten.vercel.app",
+  ],
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: {
     enabled: true,

@@ -16,8 +16,7 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
 });
 
-const siteUrl =
-  process.env.BETTER_AUTH_URL ?? "https://ayurvedic-website-ten.vercel.app";
+const siteUrl = process.env.BETTER_AUTH_URL ?? "https://kavilcure.me";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

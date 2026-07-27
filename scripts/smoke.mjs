@@ -11,7 +11,7 @@
 const BASE = (
   process.argv[2] ||
   process.env.SMOKE_URL ||
-  "https://ayurvedic-website-ten.vercel.app"
+  "https://kavilcure.me"
 ).replace(/\/$/, "");
 
 const TIMEOUT_MS = 15_000;
