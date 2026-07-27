@@ -16,13 +16,31 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
 });
 
+const siteUrl =
+  process.env.BETTER_AUTH_URL ?? "https://ayurvedic-website-ten.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Kavil-Cure — Ayurvedic Jaundice Care",
     template: "%s | Kavil-Cure",
   },
   description:
     "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930. Book consultations at our Maharashtra centres or get herbal medicine kits delivered to your home.",
+  openGraph: {
+    type: "website",
+    siteName: "Kavil-Cure",
+    locale: "en_IN",
+    title: "Kavil-Cure — Ayurvedic Jaundice Care",
+    description:
+      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930. Book consultations or get herbal medicine kits delivered across Maharashtra.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kavil-Cure — Ayurvedic Jaundice Care",
+    description:
+      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930.",
+  },
 };
 
 export default async function RootLayout({

@@ -1,4 +1,5 @@
 import "server-only";
+import type Stripe from "stripe";
 import { z } from "zod";
 import { prisma } from "./prisma";
 import { generateOrderNumber } from "./constants";
@@ -114,4 +115,47 @@ export async function createOrderForUser(opts: {
       events: { create: [{ status: "PLACED", note: paidNote }] },
     },
   });
+}
+
+// Turns a *paid* Stripe Checkout Session into an order. Idempotent (keyed on
+// the payment intent) so the success redirect and the webhook — whichever
+// fires first — can both call it safely without double-ordering.
+export async function fulfillCheckoutSession(
+  session: Stripe.Checkout.Session
+): Promise<{ orderId: string; created: boolean } | null> {
+  if (session.payment_status !== "paid") return null;
+
+  const meta = session.metadata;
+  if (!meta?.userId || !meta.productSlug) return null;
+
+  const paymentRef =
+    typeof session.payment_intent === "string"
+      ? session.payment_intent
+      : session.id;
+
+  const existing = await prisma.order.findFirst({ where: { paymentRef } });
+  if (existing) return { orderId: existing.id, created: false };
+
+  const product = await prisma.product.findUnique({
+    where: { slug: meta.productSlug },
+  });
+  if (!product) return null;
+
+  const order = await createOrderForUser({
+    userId: meta.userId,
+    product,
+    quantity: Number(meta.quantity) || 1,
+    address: {
+      name: meta.name ?? "",
+      phone: meta.phone ?? "",
+      line1: meta.line1 ?? "",
+      line2: meta.line2 ?? "",
+      city: meta.city ?? "",
+      state: meta.state ?? "",
+      pincode: meta.pincode ?? "",
+    },
+    paymentRef,
+    paidNote: "Payment received via Stripe",
+  });
+  return { orderId: order.id, created: true };
 }
