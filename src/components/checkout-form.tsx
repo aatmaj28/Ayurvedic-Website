@@ -13,21 +13,37 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { createCheckoutSession, placeOrder } from "@/lib/actions/orders";
 import type { CheckoutField, CheckoutFormState } from "@/lib/orders";
-import { formatInr } from "@/lib/constants";
+import { DELIVERY_FEE_INR, formatInr } from "@/lib/constants";
 
 export type CheckoutProduct = {
   slug: string;
   name: string;
   tagline: string;
-  priceInr: number;
   courseDays: number;
+};
+
+export type CheckoutBranch = {
+  id: string;
+  name: string;
+  city: string;
+  kitPriceInr: number;
 };
 
 export type CheckoutLabels = {
   deliveryDetails: string;
+  nearestCentre: string;
+  chooseCentre: string;
+  centreNote: string;
   whereSend: string;
   quantity: string;
   kitsMax: string;
@@ -84,17 +100,20 @@ function FieldError({ message }: { message?: string }) {
 
 export function CheckoutForm({
   product,
+  branches,
   defaults,
   labels,
   stripeEnabled,
 }: {
   product: CheckoutProduct;
+  branches: CheckoutBranch[];
   defaults: { name: string; phone: string };
   labels: CheckoutLabels;
   stripeEnabled: boolean;
 }) {
   const [step, setStep] = useState<"details" | "payment">("details");
   const [quantity, setQuantity] = useState(1);
+  const [branchId, setBranchId] = useState(branches[0]?.id ?? "");
   const [address, setAddress] = useState<Address>({
     name: defaults.name,
     phone: defaults.phone,
@@ -110,7 +129,9 @@ export function CheckoutForm({
     initialState
   );
 
-  const total = product.priceInr * quantity;
+  const branch = branches.find((b) => b.id === branchId) ?? branches[0];
+  const kitPrice = branch?.kitPriceInr ?? 0;
+  const total = kitPrice * quantity + DELIVERY_FEE_INR;
 
   function setField(field: keyof Address, value: string) {
     setAddress((prev) => ({ ...prev, [field]: value }));
@@ -147,6 +168,24 @@ export function CheckoutForm({
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="checkout-branch">{labels.nearestCentre}</Label>
+                <Select value={branchId} onValueChange={setBranchId}>
+                  <SelectTrigger id="checkout-branch" className="w-full">
+                    <SelectValue placeholder={labels.chooseCentre} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {branches.map((b) => (
+                      <SelectItem key={b.id} value={b.id}>
+                        {b.name} — {formatInr(b.kitPriceInr)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  {labels.centreNote}
+                </p>
+              </div>
               <div className="space-y-2">
                 <Label>{labels.quantity}</Label>
                 <div className="flex items-center gap-3">
@@ -312,6 +351,7 @@ export function CheckoutForm({
 
               <form action={formAction} className="space-y-4">
                 <input type="hidden" name="productSlug" value={product.slug} />
+                <input type="hidden" name="branchId" value={branchId} />
                 <input type="hidden" name="quantity" value={quantity} />
                 <input type="hidden" name="name" value={address.name} />
                 <input type="hidden" name="phone" value={address.phone} />
@@ -354,12 +394,17 @@ export function CheckoutForm({
             <div className="flex justify-between">
               <span>
                 {product.name} × {quantity}
+                {branch && (
+                  <span className="block text-xs text-muted-foreground">
+                    {branch.city}
+                  </span>
+                )}
               </span>
-              <span>{formatInr(product.priceInr * quantity)}</span>
+              <span>{formatInr(kitPrice * quantity)}</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
               <span>{labels.delivery}</span>
-              <span>{labels.free}</span>
+              <span>{formatInr(DELIVERY_FEE_INR)}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold">

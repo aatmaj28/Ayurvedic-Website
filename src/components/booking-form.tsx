@@ -31,7 +31,7 @@ export type BookableBranch = {
   slug: string;
   name: string;
   city: string;
-  consultationFee: number;
+  kitPriceInr: number;
 };
 
 const initialState: BookingFormState = { status: "idle" };
@@ -50,6 +50,7 @@ export type BookingLabels = {
   notesPlaceholder: string;
   summaryPrefix: string;
   summarySuffix: string;
+  kitAtCentre: string;
   confirm: string;
   booking: string;
 };
@@ -133,7 +134,7 @@ export function BookingForm({
               <SelectContent>
                 {branches.map((branch) => (
                   <SelectItem key={branch.id} value={branch.id}>
-                    {branch.name} — {formatInr(branch.consultationFee)}
+                    {branch.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -206,8 +207,11 @@ export function BookingForm({
             <div className="rounded-lg bg-muted/60 p-4 text-sm">
               <p>
                 {labels.summaryPrefix} <strong>{selectedBranch.name}</strong> —{" "}
-                <strong>{formatInr(selectedBranch.consultationFee)}</strong>,{" "}
-                {labels.summarySuffix}
+                <strong>{labels.summarySuffix}</strong>
+              </p>
+              <p className="mt-1 text-muted-foreground">
+                {labels.kitAtCentre}{" "}
+                <strong>{formatInr(selectedBranch.kitPriceInr)}</strong>
               </p>
             </div>
           )}

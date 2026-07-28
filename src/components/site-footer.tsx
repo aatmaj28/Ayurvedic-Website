@@ -56,10 +56,10 @@ export async function SiteFooter() {
             </p>
             <p>
               <a
-                href="mailto:care@kavilcure.com"
+                href="mailto:care@kavilcure.me"
                 className="hover:text-foreground"
               >
-                care@kavilcure.com
+                care@kavilcure.me
               </a>
             </p>
           </address>

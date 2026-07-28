@@ -13,7 +13,7 @@ test.describe("appointment booking", () => {
 
     await page.goto("/book");
     await page.getByLabel("Centre").click();
-    await page.getByRole("option", { name: /^Mumbai —/ }).click();
+    await page.getByRole("option", { name: "Mumbai", exact: true }).click();
     await page.getByLabel("Date").fill(tomorrowISO());
 
     // Pick the first slot that's actually free (the shared test DB accumulates

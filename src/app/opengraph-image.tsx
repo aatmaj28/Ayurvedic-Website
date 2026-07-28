@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Kavil-Cure — Ayurvedic Jaundice Care since 1930";
+export const alt = "Kavil-Cure — Ayurvedic Jaundice Care since 1965";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -70,7 +70,7 @@ export default function OpengraphImage() {
             marginTop: "28px",
           }}
         >
-          Trusted family practice since 1930 · Maharashtra
+          Trusted family practice since 1965 · India
         </div>
       </div>
     ),

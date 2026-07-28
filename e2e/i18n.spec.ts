@@ -25,7 +25,7 @@ test.describe("internationalization", () => {
     await page.getByRole("menuitem", { name: "हिन्दी" }).click();
 
     await expect(page.locator("html")).toHaveAttribute("lang", "hi");
-    await expect(page.getByText("1930 से महाराष्ट्र की सेवा में")).toBeVisible();
+    await expect(page.getByText("1965 से भारत की सेवा में")).toBeVisible();
   });
 
   test("locale persists across navigation", async ({ page }) => {

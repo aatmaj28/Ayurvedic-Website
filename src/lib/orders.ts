@@ -4,10 +4,11 @@ import { z } from "zod";
 import { prisma } from "./prisma";
 import { sendPushToUser } from "./push";
 import { sendEmailToUser } from "./email";
-import { formatInr, generateOrderNumber } from "./constants";
+import { DELIVERY_FEE_INR, formatInr, generateOrderNumber } from "./constants";
 
 export const checkoutSchema = z.object({
   productSlug: z.string().min(1),
+  branchId: z.string().min(1, "Please choose your nearest centre."),
   quantity: z.coerce.number().int().min(1).max(5),
   name: z.string().trim().min(2, "Please enter the recipient's name."),
   phone: z
@@ -28,6 +29,7 @@ export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
 export type CheckoutField =
   | "quantity"
+  | "branchId"
   | "name"
   | "phone"
   | "line1"
@@ -49,6 +51,7 @@ export function parseCheckout(
   | { ok: false; state: CheckoutFormState } {
   const parsed = checkoutSchema.safeParse({
     productSlug: formData.get("productSlug"),
+    branchId: formData.get("branchId"),
     quantity: formData.get("quantity"),
     name: formData.get("name"),
     phone: formData.get("phone"),
@@ -85,18 +88,30 @@ export type ShippingAddress = Pick<
 
 export async function createOrderForUser(opts: {
   userId: string;
-  product: { id: string; priceInr: number };
+  product: { id: string };
+  branchId: string;
+  unitPriceInr: number;
   quantity: number;
   address: ShippingAddress;
   paymentRef: string;
   paidNote: string;
 }) {
-  const { userId, product, quantity, address, paymentRef, paidNote } = opts;
+  const {
+    userId,
+    product,
+    branchId,
+    unitPriceInr,
+    quantity,
+    address,
+    paymentRef,
+    paidNote,
+  } = opts;
   const order = await prisma.order.create({
     data: {
       number: generateOrderNumber(),
       userId,
-      totalInr: product.priceInr * quantity,
+      branchId,
+      totalInr: unitPriceInr * quantity + DELIVERY_FEE_INR,
       paymentRef,
       shippingName: address.name,
       shippingPhone: address.phone,
@@ -110,7 +125,7 @@ export async function createOrderForUser(opts: {
           {
             productId: product.id,
             quantity,
-            unitPriceInr: product.priceInr,
+            unitPriceInr,
           },
         ],
       },
@@ -143,7 +158,7 @@ export async function fulfillCheckoutSession(
   if (session.payment_status !== "paid") return null;
 
   const meta = session.metadata;
-  if (!meta?.userId || !meta.productSlug) return null;
+  if (!meta?.userId || !meta.productSlug || !meta.branchId) return null;
 
   const paymentRef =
     typeof session.payment_intent === "string"
@@ -161,6 +176,9 @@ export async function fulfillCheckoutSession(
   const order = await createOrderForUser({
     userId: meta.userId,
     product,
+    branchId: meta.branchId,
+    // What Stripe actually charged, recorded at session creation.
+    unitPriceInr: Number(meta.unitPriceInr) || 0,
     quantity: Number(meta.quantity) || 1,
     address: {
       name: meta.name ?? "",

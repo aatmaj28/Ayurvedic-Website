@@ -50,17 +50,25 @@ function renderHtml(content: EmailContent): string {
 
 // Best-effort: email failures must never break the action that triggered
 // them (e.g. unverified domain, rate limits, bad address).
-export async function sendEmailToUser(userId: string, content: EmailContent) {
+export async function sendEmailTo(to: string, content: EmailContent) {
   if (!resend) return;
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user?.email) return;
     await resend.emails.send({
       from: FROM,
-      to: user.email,
+      to,
       subject: content.subject,
       html: renderHtml(content),
     });
+  } catch {
+    // swallow — notifications are best-effort
+  }
+}
+
+export async function sendEmailToUser(userId: string, content: EmailContent) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user?.email) return;
+    await sendEmailTo(user.email, content);
   } catch {
     // swallow — notifications are best-effort
   }

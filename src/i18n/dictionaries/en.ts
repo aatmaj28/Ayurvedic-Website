@@ -27,7 +27,7 @@ const en = {
   },
   footer: {
     tagline:
-      "Traditional Ayurvedic care for jaundice (kavil / kamini), practised by our family since 1930 — now accessible from anywhere in Maharashtra.",
+      "Traditional Ayurvedic care for jaundice (kavil / kamini), practised by our family since 1965 — now accessible from anywhere in India.",
     quickLinks: "Quick links",
     headOffice: "Head office",
     disclaimerTitle: "Medical disclaimer:",
@@ -36,26 +36,26 @@ const en = {
     builtBy: "Built by",
   },
   home: {
-    heroBadge: "Serving Maharashtra since 1930",
+    heroBadge: "Serving India since 1965",
     heroTitle: "Gentle, time-tested Ayurvedic care for jaundice",
     heroSubtitle:
       "Kavil-Cure has treated jaundice (kavil / kamini) with the same herbal preparation for four generations — without the stress, or the bill, of a hospital stay. Book a consultation or get a medicine kit delivered to your door.",
     statSince: "Practising since",
     statPatients: "Patients treated",
     statCentres: "Centres in Maharashtra",
-    statFrom: "Consultations from",
+    statConsultations: "Consultations",
     whyTitle: "Why families choose Kavil-Cure",
     whySubtitle:
       "Traditional medicine, delivered with the convenience you expect today.",
     feature1Title: "Fully herbal preparation",
     feature1Desc:
-      "One family recipe, prepared the traditional way for over nine decades — no synthetic additives.",
+      "One family recipe, prepared the traditional way for over six decades — no synthetic additives.",
     feature2Title: "Affordable by design",
     feature2Desc:
-      "Treatment shouldn't mean a hospital-sized bill. Consultations start at ₹250 and kits at ₹899.",
+      "Treatment shouldn't mean a hospital-sized bill. Consultations are free at every centre, and medicine kits start at ₹50.",
     feature3Title: "Home delivery",
     feature3Desc:
-      "Can't travel? Medicine kits are delivered across Maharashtra with order tracking.",
+      "Can't travel? Medicine kits are delivered all over India with order tracking.",
     feature4Title: "Three centres",
     feature4Desc:
       "Visit us in Islampur (HQ), Mumbai, or Navi Mumbai — whichever is closest to you.",
@@ -64,14 +64,14 @@ const en = {
       "Every course comes with dietary guidance and follow-up support until you're back on your feet.",
     feature6Title: "A trusted legacy",
     feature6Desc:
-      "Four generations of the same family have carried this practice forward since 1930.",
+      "Four generations of the same family have carried this practice forward since 1965.",
     centresTitle: "Our centres & pricing",
     centresSubtitle:
-      "Transparent consultation fees at every branch. Walk-ins welcome at the HQ; booking recommended elsewhere.",
+      "Consultations are free at every centre — you pay only for the medicine kit. Walk-ins welcome at all centres; booking recommended.",
     howTitle: "How it works",
     step1Title: "Book a consultation",
     step1Desc:
-      "Pick a centre, date, and time slot online — or walk in at our Islampur HQ.",
+      "Pick a centre, date, and time slot online — or walk in at any of our centres.",
     step2Title: "Get your medicine",
     step2Desc:
       "Collect your kit at the centre, or order online and have it delivered home.",
@@ -86,6 +86,8 @@ const en = {
     bookAt: "Book at",
     callBeforeArrival: "Call Before Arrival",
     mostPopular: "Most popular",
+    free: "Free",
+    perKit: "medicine kit",
   },
   treatment: {
     heroTitle: "Understanding jaundice, and how we treat it",
@@ -101,13 +103,13 @@ const en = {
       "Seek immediate medical care for jaundice in newborns, children, or during pregnancy, or if it is accompanied by high fever, severe abdominal pain, confusion, or vomiting blood. Our treatment supports recovery — it does not replace emergency care or a clinical diagnosis.",
     courseTitle: "What a course includes",
     courseSubtitle:
-      "The same treatment our family has offered since 1930, organised into a clear, guided course.",
+      "The same treatment our family has offered since 1965, organised into a clear, guided course.",
     course1Title: "Initial consultation",
     course1Desc:
       "A practitioner assesses your symptoms, history, and severity before any medicine is given.",
     course2Title: "Herbal medicine course",
     course2Desc:
-      "Daily doses of our traditional preparation, portioned for a 7-day or 21-day course.",
+      "Daily doses of our traditional preparation, portioned into a one-week course.",
     course3Title: "Dietary guidance",
     course3Desc:
       "A liver-friendly diet chart — what to eat, what to strictly avoid, and for how long.",
@@ -131,12 +133,12 @@ const en = {
   about: {
     heroTitle: "Four generations of care",
     heroSubtitle:
-      "Kavil-Cure started in 1930 as one practitioner in Islampur with a family recipe and a simple belief: recovery from jaundice shouldn't require a hospital-sized bill. Over 25 lakh patients later, that belief hasn't changed.",
+      "Kavil-Cure started in 1965 as one practitioner in Islampur with a family recipe and a simple belief: recovery from jaundice shouldn't require a hospital-sized bill. Over 25 lakh patients later, that belief hasn't changed.",
     storyTitle: "Our story",
     time1Title: "A family practice begins",
     time1Desc:
       "Our great-grandfather begins treating jaundice patients in Islampur with a herbal preparation passed down through the family.",
-    time2Year: "1960s–80s",
+    time2Year: "1970s–90s",
     time2Title: "Word spreads across Western Maharashtra",
     time2Desc:
       "Patients travel from Kolhapur, Sangli, Satara, and beyond. The recipe and the method stay exactly the same.",
@@ -166,13 +168,15 @@ const en = {
   medicine: {
     heroTitle: "Medicine kits, delivered home",
     heroSubtitle:
-      "The same preparation dispensed at our centres, portioned into guided courses and delivered anywhere in Maharashtra.",
+      "The same preparation dispensed at our centres, portioned into a guided one-week course and delivered anywhere in India.",
     dayCourse: "day course",
-    freeDelivery: "free delivery",
+    freeDelivery: "flat ₹30 delivery",
     orderThisKit: "Order this kit",
-    deliveryTitle: "Delivery across Maharashtra",
+    deliveryTitle: "Delivery all over India",
     deliveryBody:
-      "Orders are dispatched from our Islampur HQ within 24 hours and typically arrive in 2–4 days. You can track every step from your dashboard.",
+      "Orders are dispatched from your nearest centre within 24 hours and typically arrive in 2–4 days, for a flat ₹30 delivery fee. You can track every step from your dashboard.",
+    priceByCentre: "Kit price by centre",
+    freeConsultNote: "Consultation is free at every centre.",
     firstTimeTitle: "First time taking the course?",
     firstTimeBody1: "We recommend a",
     firstTimeConsultation: "consultation",
@@ -214,13 +218,12 @@ const en = {
     newHere: "New here?",
     createOne: "Create an account",
     haveAccount: "Already have an account?",
-    demoTitle: "Demo credentials",
     genericError: "Something went wrong. Please try again.",
   },
   booking: {
     title: "Book a consultation",
     subtitle:
-      "Choose a centre, a date, and a time slot. Pay the consultation fee at the centre — no advance payment needed.",
+      "Choose a centre, a date, and a time slot. The consultation is free — you pay only for medicine if prescribed.",
     centre: "Centre",
     chooseCentre: "Choose a centre",
     date: "Date",
@@ -230,7 +233,8 @@ const en = {
     notes: "Notes for the practitioner",
     notesPlaceholder: "e.g. symptoms started a week ago…",
     summaryPrefix: "Consultation at",
-    summarySuffix: "payable at the centre.",
+    summarySuffix: "free of charge.",
+    kitAtCentre: "Medicine kit at this centre:",
     confirm: "Confirm booking",
     booking: "Booking…",
   },
@@ -285,6 +289,9 @@ const en = {
   checkout: {
     title: "Checkout",
     deliveryDetails: "Delivery details",
+    nearestCentre: "Your nearest centre",
+    chooseCentre: "Choose your nearest centre",
+    centreNote: "Your kit is priced and dispatched by the centre nearest to you.",
     whereSend: "Where should we send your",
     quantity: "Quantity",
     kitsMax: "kit(s) — max 5",
@@ -318,7 +325,7 @@ const en = {
     orderSummary: "Order summary",
     delivery: "Delivery",
     total: "Total",
-    dispatchNote: "· dispatched from Islampur HQ within 24 hours.",
+    dispatchNote: "· dispatched from your nearest centre within 24 hours.",
   },
   admin: {
     title: "Clinic admin",

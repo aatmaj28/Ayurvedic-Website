@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { sendEmailTo } from "@/lib/email";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name."),
@@ -55,6 +56,19 @@ export async function submitContactMessage(
       message: parsed.data.message,
     },
   });
+
+  // Forward to the clinic inbox as well (best-effort; the message is
+  // already safely stored and visible in the admin panel).
+  const notifyTo = process.env.CONTACT_NOTIFY_EMAIL;
+  if (notifyTo) {
+    await sendEmailTo(notifyTo, {
+      subject: `New contact message from ${parsed.data.name}`,
+      heading: "New contact message",
+      body: `<strong>${parsed.data.name}</strong> (${parsed.data.email}${parsed.data.phone ? `, ${parsed.data.phone}` : ""}) wrote:<br/><br/>${parsed.data.message.replace(/</g, "&lt;").replace(/\n/g, "<br/>")}`,
+      ctaLabel: "Open admin messages",
+      ctaPath: "/admin/messages",
+    });
+  }
 
   return {
     status: "success",

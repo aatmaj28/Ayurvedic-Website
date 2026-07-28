@@ -43,14 +43,19 @@ export async function BranchCard({
         )}
       </CardHeader>
       <CardContent className="space-y-4">
-        <p>
-          <span className="font-heading text-3xl font-semibold">
-            {formatInr(branch.consultationFee)}
-          </span>{" "}
-          <span className="text-sm text-muted-foreground">
-            / {dict.common.perConsultation}
-          </span>
-        </p>
+        <div>
+          <p>
+            <span className="font-heading text-3xl font-semibold">
+              {dict.branch.free}
+            </span>{" "}
+            <span className="text-sm text-muted-foreground">
+              / {dict.common.perConsultation}
+            </span>
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {formatInr(branch.kitPriceInr)} / {dict.branch.perKit}
+          </p>
+        </div>
         <ul className="space-y-2 text-sm text-muted-foreground">
           {features.map((feature) => (
             <li key={feature} className="flex items-start gap-2">

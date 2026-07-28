@@ -24,12 +24,17 @@ test.describe("public pages", () => {
     ).toBeVisible();
   });
 
-  test("medicine page lists both kits with INR prices", async ({ page }) => {
+  test("medicine page lists the kit with per-centre prices", async ({
+    page,
+  }) => {
     await page.goto("/medicine");
     await expect(page.getByText("Kavil-Cure Classic Kit")).toBeVisible();
-    await expect(page.getByText("Kavil-Cure Extended Kit")).toBeVisible();
-    await expect(page.getByText("₹899")).toBeVisible();
-    await expect(page.getByText("₹1,999")).toBeVisible();
+    // The extended kit is retired from the storefront.
+    await expect(page.getByText("Kavil-Cure Extended Kit")).toHaveCount(0);
+    // Per-centre kit prices.
+    await expect(page.getByText("₹50")).toBeVisible();
+    await expect(page.getByText("₹200")).toBeVisible();
+    await expect(page.getByText("₹300")).toBeVisible();
   });
 
   test("contact form submits and confirms", async ({ page }) => {

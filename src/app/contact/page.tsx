@@ -78,8 +78,8 @@ export default async function ContactPage() {
             <h3 className="font-semibold">{t.emailTitle}</h3>
             <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
               <Mail className="size-4 shrink-0" aria-hidden />
-              <a href="mailto:care@kavilcure.com" className="hover:text-foreground">
-                care@kavilcure.com
+              <a href="mailto:care@kavilcure.me" className="hover:text-foreground">
+                care@kavilcure.me
               </a>
             </p>
           </div>

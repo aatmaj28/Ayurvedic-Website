@@ -103,10 +103,21 @@ export default async function OrderDetailPage({
                   <span>{formatInr(item.unitPriceInr * item.quantity)}</span>
                 </div>
               ))}
-              <div className="flex justify-between text-muted-foreground">
-                <span>{t.delivery}</span>
-                <span>{dict.common.free}</span>
-              </div>
+              {(() => {
+                const itemsTotal = order.items.reduce(
+                  (sum, item) => sum + item.unitPriceInr * item.quantity,
+                  0
+                );
+                const delivery = order.totalInr - itemsTotal;
+                return (
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{t.delivery}</span>
+                    <span>
+                      {delivery > 0 ? formatInr(delivery) : dict.common.free}
+                    </span>
+                  </div>
+                );
+              })()}
               <Separator />
               <div className="flex justify-between font-semibold">
                 <span>{t.total}</span>

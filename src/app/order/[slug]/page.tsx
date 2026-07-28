@@ -18,8 +18,14 @@ export default async function OrderPage({
   const session = await requireSession();
   const [{ slug }, dict] = await Promise.all([params, getDictionary()]);
 
-  const product = await prisma.product.findUnique({ where: { slug } });
-  if (!product) notFound();
+  const [product, branches] = await Promise.all([
+    prisma.product.findUnique({ where: { slug } }),
+    prisma.branch.findMany({
+      orderBy: { kitPriceInr: "asc" },
+      select: { id: true, name: true, city: true, kitPriceInr: true },
+    }),
+  ]);
+  if (!product || !product.active) notFound();
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-16">
@@ -31,9 +37,9 @@ export default async function OrderPage({
           slug: product.slug,
           name: product.name,
           tagline: product.tagline,
-          priceInr: product.priceInr,
           courseDays: product.courseDays,
         }}
+        branches={branches}
         defaults={{
           name: session.user.name,
           phone: session.user.phone ?? "",

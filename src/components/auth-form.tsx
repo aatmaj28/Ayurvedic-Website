@@ -33,7 +33,6 @@ export type AuthLabels = {
   newHere: string;
   createOne: string;
   haveAccount: string;
-  demoTitle: string;
   genericError: string;
 };
 
@@ -165,14 +164,6 @@ export function AuthForm({
           </p>
         </CardContent>
       </Card>
-      <div className="rounded-lg border border-dashed bg-muted/40 p-4 text-xs text-muted-foreground">
-        <p className="font-medium text-foreground">{labels.demoTitle}</p>
-        <p className="mt-1">
-          Patient: patient@kavilcure.com / patient123
-          <br />
-          Admin: admin@kavilcure.com / admin1234
-        </p>
-      </div>
     </div>
   );
 }

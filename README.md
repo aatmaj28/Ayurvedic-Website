@@ -20,13 +20,13 @@ This is the ground-up rebuild: a real database, real authentication, working boo
 - Home, treatment, about, and contact pages with a custom design system (deep botanical green + warm cream palette, Fraunces/Inter type pairing)
 - Trilingual — English, Hindi (हिन्दी), and Marathi (मराठी) — via a cookie-based locale with a header language switcher; the entire app (public pages, patient dashboard, checkout, and admin panel) translates, and `<html lang>` updates
 - Working contact form persisted to the database
-- Branch listing with transparent consultation pricing (₹)
+- Branch listing — consultations are free at every centre; medicine-kit prices vary by centre (₹50/₹200/₹300)
 - Medical disclaimer and honest, softened health claims
 
 **Patients**
 - Email/password auth (better-auth) with session-gated routes
 - Book consultations: pick a centre, date, and time slot — already-booked slots are disabled live
-- Order medicine kits: quantity → delivery address → Stripe Checkout (test mode) → order confirmation
+- Order medicine kits: nearest centre (sets the kit price) → quantity → delivery address (+flat ₹30 delivery) → Stripe Checkout (test mode) → order confirmation
 - Dashboard with appointments (cancellable) and orders with a live tracking timeline (placed → confirmed → shipped → out for delivery → delivered)
 - Web push notifications (opt-in from the dashboard): booking confirmations, order receipts, and status updates land on the patient's device the moment they happen — no external service, standard Web Push with VAPID
 - Email notifications (Resend, from care@kavilcure.me): booking confirmations, order receipts, and status-change emails with a branded template; gracefully disabled when `RESEND_API_KEY` is unset
@@ -67,12 +67,8 @@ npx prisma db seed            # branches, products, demo users, sample data
 npm run dev                   # http://localhost:3000
 ```
 
-**Demo accounts** (created by the seed):
-
-| Role    | Email                  | Password   |
-| ------- | ---------------------- | ---------- |
-| Patient | patient@kavilcure.com  | patient123 |
-| Admin   | admin@kavilcure.com    | admin1234  |
+The seed creates demo patient/admin accounts — see `prisma/seed.ts`. **Change the
+admin password before using this in production.**
 
 ## Project structure
 

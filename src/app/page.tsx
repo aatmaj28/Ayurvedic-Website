@@ -16,16 +16,16 @@ import { getDictionary } from "@/i18n";
 
 export default async function HomePage() {
   const [branches, dict] = await Promise.all([
-    prisma.branch.findMany({ orderBy: { consultationFee: "asc" } }),
+    prisma.branch.findMany({ orderBy: { kitPriceInr: "asc" } }),
     getDictionary(),
   ]);
   const t = dict.home;
 
   const stats = [
-    { value: "1930", label: t.statSince },
+    { value: "1965", label: t.statSince },
     { value: "25 lakh+", label: t.statPatients },
     { value: "3", label: t.statCentres },
-    { value: "₹250", label: t.statFrom },
+    { value: dict.common.free, label: t.statConsultations },
   ];
 
   const features = [

@@ -18,13 +18,13 @@ export default async function BookPage({
   const [{ branch }, dict] = await Promise.all([searchParams, getDictionary()]);
 
   const branches = await prisma.branch.findMany({
-    orderBy: { consultationFee: "asc" },
+    orderBy: { kitPriceInr: "asc" },
     select: {
       id: true,
       slug: true,
       name: true,
       city: true,
-      consultationFee: true,
+      kitPriceInr: true,
     },
   });
 

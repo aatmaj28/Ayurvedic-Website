@@ -25,20 +25,20 @@ export const metadata: Metadata = {
     template: "%s | Kavil-Cure",
   },
   description:
-    "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930. Book consultations at our Maharashtra centres or get herbal medicine kits delivered to your home.",
+    "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1965. Book consultations at our Maharashtra centres or get herbal medicine kits delivered to your home.",
   openGraph: {
     type: "website",
     siteName: "Kavil-Cure",
     locale: "en_IN",
     title: "Kavil-Cure — Ayurvedic Jaundice Care",
     description:
-      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930. Book consultations or get herbal medicine kits delivered across Maharashtra.",
+      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1965. Book consultations or get herbal medicine kits delivered all over India.",
   },
   twitter: {
     card: "summary_large_image",
     title: "Kavil-Cure — Ayurvedic Jaundice Care",
     description:
-      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1930.",
+      "Traditional Ayurvedic care for jaundice (kavil/kamini) since 1965.",
   },
 };
 

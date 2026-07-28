@@ -34,7 +34,7 @@ export const ORDER_STATUS_LABELS: Record<string, string> = {
   CANCELLED: "Cancelled",
 };
 
-export const DELIVERY_FEE_INR = 0;
+export const DELIVERY_FEE_INR = 30;
 
 export function formatInr(amount: number): string {
   return new Intl.NumberFormat("en-IN", {

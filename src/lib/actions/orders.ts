@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
 import { stripe } from "@/lib/stripe";
+import { DELIVERY_FEE_INR } from "@/lib/constants";
 import {
   createOrderForUser,
   parseCheckout,
@@ -19,6 +20,15 @@ async function resolveOrigin(): Promise<string> {
   return `${proto}://${host}`;
 }
 
+async function loadProductAndBranch(productSlug: string, branchId: string) {
+  const [product, branch] = await Promise.all([
+    prisma.product.findUnique({ where: { slug: productSlug } }),
+    prisma.branch.findUnique({ where: { id: branchId } }),
+  ]);
+  if (!product || !product.active || !branch) return null;
+  return { product, branch };
+}
+
 // Mock checkout: used when Stripe isn't configured (local dev / CI / preview).
 export async function placeOrder(
   _prevState: CheckoutFormState,
@@ -28,17 +38,20 @@ export async function placeOrder(
   const parsed = parseCheckout(formData);
   if (!parsed.ok) return parsed.state;
 
-  const product = await prisma.product.findUnique({
-    where: { slug: parsed.data.productSlug },
-  });
-  if (!product) {
+  const loaded = await loadProductAndBranch(
+    parsed.data.productSlug,
+    parsed.data.branchId
+  );
+  if (!loaded) {
     return { status: "error", message: "This product is no longer available." };
   }
 
   const paymentRef = `PAY-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
   const order = await createOrderForUser({
     userId: session.user.id,
-    product,
+    product: loaded.product,
+    branchId: loaded.branch.id,
+    unitPriceInr: loaded.branch.kitPriceInr,
     quantity: parsed.data.quantity,
     address: parsed.data,
     paymentRef,
@@ -63,12 +76,14 @@ export async function createCheckoutSession(
   const parsed = parseCheckout(formData);
   if (!parsed.ok) return parsed.state;
 
-  const product = await prisma.product.findUnique({
-    where: { slug: parsed.data.productSlug },
-  });
-  if (!product) {
+  const loaded = await loadProductAndBranch(
+    parsed.data.productSlug,
+    parsed.data.branchId
+  );
+  if (!loaded) {
     return { status: "error", message: "This product is no longer available." };
   }
+  const { product, branch } = loaded;
 
   const { quantity, ...address } = parsed.data;
   const origin = await resolveOrigin();
@@ -80,17 +95,27 @@ export async function createCheckoutSession(
         quantity,
         price_data: {
           currency: "inr",
-          unit_amount: product.priceInr * 100, // paise
+          unit_amount: branch.kitPriceInr * 100, // paise
           product_data: {
             name: product.name,
-            description: product.tagline,
+            description: `${product.tagline} · from ${branch.city}`,
           },
+        },
+      },
+      {
+        quantity: 1,
+        price_data: {
+          currency: "inr",
+          unit_amount: DELIVERY_FEE_INR * 100,
+          product_data: { name: "Delivery" },
         },
       },
     ],
     metadata: {
       userId: session.user.id,
       productSlug: address.productSlug,
+      branchId: branch.id,
+      unitPriceInr: String(branch.kitPriceInr),
       quantity: String(quantity),
       name: address.name,
       phone: address.phone,

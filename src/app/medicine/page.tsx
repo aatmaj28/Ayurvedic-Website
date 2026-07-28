@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarRange, Info, Truck } from "lucide-react";
+import { BadgeCheck, CalendarRange, Info, Truck } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,19 @@ import { getDictionary } from "@/i18n";
 export const metadata: Metadata = {
   title: "Medicine Kits",
   description:
-    "Order Kavil-Cure's traditional herbal medicine kits for jaundice — home delivery across Maharashtra with order tracking.",
+    "Order Kavil-Cure's traditional herbal medicine kit for jaundice — home delivery all over India with order tracking.",
 };
 
 export default async function MedicinePage() {
-  const [products, dict] = await Promise.all([
-    prisma.product.findMany({ orderBy: { priceInr: "asc" } }),
+  const [products, branches, dict] = await Promise.all([
+    prisma.product.findMany({
+      where: { active: true },
+      orderBy: { priceInr: "asc" },
+    }),
+    prisma.branch.findMany({
+      orderBy: { kitPriceInr: "asc" },
+      select: { id: true, name: true, city: true, kitPriceInr: true },
+    }),
     getDictionary(),
   ]);
   const t = dict.medicine;
@@ -62,14 +69,6 @@ export default async function MedicinePage() {
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {product.description}
                 </p>
-                <p>
-                  <span className="font-heading text-3xl font-semibold">
-                    {formatInr(product.priceInr)}
-                  </span>{" "}
-                  <span className="text-sm text-muted-foreground">
-                    · {t.freeDelivery}
-                  </span>
-                </p>
               </CardContent>
               <CardFooter>
                 <Button asChild size="lg" className="w-full">
@@ -78,6 +77,34 @@ export default async function MedicinePage() {
               </CardFooter>
             </Card>
           ))}
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-heading text-xl">
+                {t.priceByCentre}
+              </CardTitle>
+              <CardDescription>{t.freeConsultNote}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {branches.map((branch) => (
+                <div
+                  key={branch.id}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <span className="flex items-center gap-2">
+                    <BadgeCheck className="size-4 text-primary" aria-hidden />
+                    {branch.name}
+                  </span>
+                  <span className="font-semibold">
+                    {formatInr(branch.kitPriceInr)}
+                  </span>
+                </div>
+              ))}
+              <p className="pt-1 text-xs text-muted-foreground">
+                + {t.freeDelivery}
+              </p>
+            </CardContent>
+          </Card>
         </div>
 
         <div className="mt-10 space-y-4">

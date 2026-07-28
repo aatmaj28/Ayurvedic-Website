@@ -8,7 +8,7 @@ const privateKey = process.env.VAPID_PRIVATE_KEY;
 export const pushEnabled = Boolean(publicKey && privateKey);
 
 if (publicKey && privateKey) {
-  webpush.setVapidDetails("mailto:care@kavilcure.com", publicKey, privateKey);
+  webpush.setVapidDetails("mailto:care@kavilcure.me", publicKey, privateKey);
 }
 
 export type PushPayload = {

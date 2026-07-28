@@ -9,7 +9,7 @@ import { getDictionary } from "@/i18n";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "The story of Kavil-Cure: four generations of traditional Ayurvedic jaundice care from Islampur, Maharashtra, since 1930.",
+    "The story of Kavil-Cure: four generations of traditional Ayurvedic jaundice care from Islampur, Maharashtra, since 1965.",
 };
 
 export default async function AboutPage() {
@@ -20,7 +20,7 @@ export default async function AboutPage() {
   const t = dict.about;
 
   const timeline = [
-    { year: "1930", title: t.time1Title, description: t.time1Desc },
+    { year: "1965", title: t.time1Title, description: t.time1Desc },
     { year: t.time2Year, title: t.time2Title, description: t.time2Desc },
     { year: t.time3Year, title: t.time3Title, description: t.time3Desc },
     { year: t.time4Year, title: t.time4Title, description: t.time4Desc },
